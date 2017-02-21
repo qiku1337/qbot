@@ -6,11 +6,11 @@
 #include <Timers.au3>
 
 $l = _Timer_Init()
-global $pid,$memory,$name,$RunemakerInput,$ManaInput,$NameIn,$HealSpellIn,$HealMana,$HealHp
+global $pid,$memory,$name,$RunemakerInput,$ManaInput,$NameIn,$HealSpellIn,$HealMana,$HealHp,$Manacurr
 
 Func pop()
    #Region ### START Koda GUI section ### Form=C:\Users\Qiku\Desktop\autoit gui\Forms\Pop.kxf
-   $Pop = GUICreate("pop", 148, 181, 1486, 46)
+   $Pop = GUICreate("Select client", 148, 181, 1486, 46)
    $NameLabExe = GUICtrlCreateLabel("Client Exe", 32, 16, 61, 17)
    $NameExeIn = GUICtrlCreateInput("Dolnera.exe", 32, 40, 81, 21)
    $OkBut = GUICtrlCreateButton("OK", 16, 136, 113, 25)
@@ -29,17 +29,16 @@ Func pop()
 	    $clientname = GUICtrlRead($NameExeIn)
 
 		if ProcessExists($clientname) Then
-		   ConsoleWrite("tak")
+			$pid = ProcessExists($clientname)
+			$memory = _MemoryOpen($pid)
+			$name = $NameLab
+	        GUISetState(@SW_HIDE)
+			botgui()
 		Else
-		   ConsoleWrite ("nie")
+
+		   MsgBox(NULL,"Error", "Cos sie zjebalo")
+
 	    EndIf
-
-	   $pid = ProcessExists($clientname)
-	   $memory = _MemoryOpen($pid)
-	   $name = $NameLab
-
-	   GUISetState(@SW_HIDE)
-	   botgui()
 	EndSwitch
  WEnd
  EndFunc
@@ -91,7 +90,7 @@ Func botgui()
 
 	    Case $Afkon
 			If _IsChecked($Afkon) Then
-			   $id3 = _Timer_SetTimer($Bot,200,"afk")
+			   $id3 = _Timer_SetTimer($Bot,20000,"afk")
 			Else
 			   _Timer_KillTimer($Bot,$id3)
 			EndIf
@@ -131,7 +130,7 @@ EndFunc
 	$clientname = guictrlread($NameIn)
 	$manaclient = guictrlread($ManaInput)
 	$mana = _MemoryRead(0x005C682C,$memory)
-
+    GUICtrlSetData($Manacurr,$mana)
 	  if $mana >= $manaclient Then
 
 		controlsend($clientname,"","",$spellname)
@@ -155,6 +154,7 @@ EndFunc
 		 if $hp <= $hpheal1 Then
 
 			controlsend($clientname,"","",$spellname)
+
 			ConsoleWrite("healing ")
 
 		 EndIf
