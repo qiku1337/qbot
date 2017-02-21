@@ -3,66 +3,42 @@
 #include <GUIConstantsEx.au3>
 #include <WindowsConstants.au3>
 #include <nomad.au3>
+#include <pop.au3>
 #include <Timers.au3>
 
 $l = _Timer_Init()
-global $pid,$memory,$name,$RunemakerInput,$ManaInput,$NameIn,$HealSpellIn,$HealMana,$HealHp,$Manacurr
+global $pid,$memory,$name,$RunemakerInput,$ManaInput,$NameIn,$HealSpellIn,$HealMana,$HealHp,$Manacurr,$handle
+global $uhx,$uhy,$playerx,$playery
 
-Func pop()
-   #Region ### START Koda GUI section ### Form=C:\Users\Qiku\Desktop\autoit gui\Forms\Pop.kxf
-   $Pop = GUICreate("Select client", 148, 181, 1486, 46)
-   $NameLabExe = GUICtrlCreateLabel("Client Exe", 32, 16, 61, 17)
-   $NameExeIn = GUICtrlCreateInput("Dolnera.exe", 32, 40, 81, 21)
-   $OkBut = GUICtrlCreateButton("OK", 16, 136, 113, 25)
-   $NameLab = GUICtrlCreateLabel("Client Name", 32, 72, 61, 17)
-   $NameIn = GUICtrlCreateInput("Dolnera", 32, 96, 81, 21)
-   GUISetState(@SW_SHOW)
-   #EndRegion ### END Koda GUI section ###
+HotKeySet("{Numpad1}", "uhxy")
+HotKeySet("{Numpad2}", "playerxy")
 
-   While 1
-	$nMsg = GUIGetMsg()
-	Switch $nMsg
-	   Case $GUI_EVENT_CLOSE
-			Exit
-
-	 Case $OkBut
-	    $clientname = GUICtrlRead($NameExeIn)
-
-		if ProcessExists($clientname) Then
-			$pid = ProcessExists($clientname)
-			$memory = _MemoryOpen($pid)
-			$name = $NameLab
-	        GUISetState(@SW_HIDE)
-			botgui()
-		Else
-
-		   MsgBox(NULL,"Error", "Cos sie zjebalo")
-
-	    EndIf
-	EndSwitch
- WEnd
- EndFunc
-
- pop()
+pop()
 
 Func botgui()
 
    #Region ### START Koda GUI section ### Form=
-   $Bot = GUICreate("Bot by Qiku v2 rev 1", 230, 220, 1486, 46)
+   $Bot = GUICreate("Bot by Qiku v2 rev 1", 231, 221, 1486, 46)
    $Runeon = GUICtrlCreateCheckbox("Runemaker on", 128, 32, 73, 25)
    $RuneLabel = GUICtrlCreateLabel("Runemaker", 40, 8, 60, 17)
    $ManaInput = GUICtrlCreateInput("300", 40, 64, 57, 21)
    $RunemakerInput = GUICtrlCreateInput("{f12}", 40, 32, 57, 21)
-   $AimlockLabel = GUICtrlCreateLabel("Aimlock", 48, 104, 36, 17)
+   $AimlockLabel = GUICtrlCreateLabel("Aimlock", 40, 104, 36, 17)
    $Aimlockon = GUICtrlCreateCheckbox("Aimlock on", 128, 96, 73, 25)
-   $ManaLabel = GUICtrlCreateLabel("Mana", 120, 64, 36, 17)
-   $Manacurr = GUICtrlCreateLabel("0", 160, 64, 36, 17)
+   $ManaLabel = GUICtrlCreateLabel("Mana", 128, 64, 36, 17)
+   $Manacurr = GUICtrlCreateLabel("0", 168, 64, 36, 17)
    $Afkon = GUICtrlCreateCheckbox("Anti Afk", 128, 8, 73, 25)
-   $HealLab = GUICtrlCreateLabel("Auto heal", 48, 136, 49, 17)
+   $HealLab = GUICtrlCreateLabel("Auto heal", 40, 136, 49, 17)
    $Healon = GUICtrlCreateCheckbox("Heal on", 128, 128, 73, 25)
-   $HealSpellIn = GUICtrlCreateInput("{f3}", 48, 160, 49, 21)
+   $HealSpellIn = GUICtrlCreateInput("{f3}", 40, 160, 49, 21)
    $HealMana = GUICtrlCreateInput("80", 128, 160, 49, 21)
-   $HealHp = GUICtrlCreateInput("250", 48, 180, 49, 25)
+   $HealHp = GUICtrlCreateInput("250", 40, 180, 49, 21)
+   $Hotk = GUICtrlCreateLabel("Hotk", 8, 32, 27, 17)
+   $Label1 = GUICtrlCreateLabel("Mana", 8, 64, 31, 17)
+   $Label2 = GUICtrlCreateLabel("Hotk", 8, 160, 27, 17)
+   $Label3 = GUICtrlCreateLabel("Hp", 8, 184, 31, 17)
+   $Label4 = GUICtrlCreateLabel("Mana", 95, 160, 33, 17)
+   $UhOn = GUICtrlCreateCheckbox("Uh on", 128, 184, 65, 17)
    GUISetState(@SW_SHOW)
    #EndRegion ### END Koda GUI section ###
 
@@ -97,9 +73,16 @@ Func botgui()
 
 		 Case $Healon
 			If _IsChecked($Healon) Then
-			   $id4 = _Timer_SetTimer($Bot,200,"heal")
+			   $id4 = _Timer_SetTimer($Bot,100,"heal")
 			Else
 			   _Timer_KillTimer($Bot,$id4)
+			EndIf
+
+	     Case $UhOn
+			If _IsChecked($UhOn) Then
+			   $id5 = _Timer_SetTimer($Bot,200,"uh")
+			Else
+			   _Timer_KillTimer($Bot,$id5)
 			EndIf
 
 	EndSwitch
@@ -107,9 +90,30 @@ Func botgui()
 
 EndFunc
 
+;hotkeye
+
+Func uhxy()
+	  $uhx = MouseGetPos(0)
+	  $uhy = MouseGetPos(1)
+	  ConsoleWrite($uhx)
+	   ConsoleWrite("/")
+	  ConsoleWrite($uhy)
+	  ConsoleWrite(" ")
+EndFunc
+
+Func playerxy()
+	  $playerx = MouseGetPos(0)
+	  $playery = MouseGetPos(1)
+	  ConsoleWrite("playerxy ")
+EndFunc
+
+;funkcja ischeckbox
+
 Func _IsChecked($idControlID)
     Return BitAND(GUICtrlRead($idControlID), $GUI_CHECKED) = $GUI_CHECKED
-EndFunc
+ EndFunc
+
+;funkcje botowe
 
 func aim($1,$2,$3,$4)
 
@@ -160,6 +164,21 @@ EndFunc
 		 EndIf
 	  EndIf
 
+EndFunc
+
+func uh($1,$2,$3,$4)
+	$clientname = guictrlread($NameIn)
+	$hpheal1 = guictrlread($HealHp)
+	$handle = WinGetHandle($clientname, "")
+
+	$hp = _MemoryRead(0x005C6848,$memory)
+
+		 if $hp <= $hpheal1 Then
+
+			ControlClick($handle,"","","right",1,$uhx,$uhy)
+			ControlClick($handle,"","","left",1,$playerx,$playery)
+
+		 EndIf
 EndFunc
 
 
