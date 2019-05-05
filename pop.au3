@@ -2,9 +2,9 @@
 global $NameExeIn, $List1, $hWnd, $foodx, $foody
 Func pop()
    #Region ### START Koda GUI section ### Form=
-   $Pop = GUICreate("Select client", 152, 257, 1486, 46)
+   $Pop = GUICreate("Select client", 181, 264, 364, 37)
    $NameLabExe = GUICtrlCreateLabel("Client Exe", 32, 56, 61, 17)
-   $NameExeIn = GUICtrlCreateInput("Tibia.exe", 32, 80, 81, 21)
+   $NameExeIn = GUICtrlCreateInput("RealestaOGL.exe", 32, 80, 81, 21)
    $OkBut = GUICtrlCreateButton("OK", 16, 216, 113, 25)
    $bclientl = GUICtrlCreateButton("Click check clients id", 16, 8, 113, 41)
    $List1 = GUICtrlCreateList("", 16, 112, 113, 97)
@@ -22,8 +22,13 @@ Func pop()
 	    $clientname = GUICtrlRead($NameExeIn)
 
 		if ProcessExists($clientname) Then
+		    SetPrivilege("SeDebugPrivilege", 1)
 			$pid = ControlCommand($Pop, "", $List1, "GetCurrentSelection")
-			$memory = _MemoryOpen($pid)
+
+			$kryProc = _Process_Open($pid)
+			global $base_adr = _Process_GetBaseAddress($kryProc)
+
+			$memory_g = _MemoryOpen($pid)
 			$hWnd = _GetHwndFromPID($pid)
 
 	        GUISetState(@SW_HIDE)
