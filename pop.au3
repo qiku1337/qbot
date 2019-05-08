@@ -1,16 +1,16 @@
-#include <MsgBoxConstants.au3>
 global $NameExeIn, $List1, $hWnd, $foodx, $foody
 Func pop()
-   #Region ### START Koda GUI section ### Form=
-   $Pop = GUICreate("Select client", 181, 264, 364, 37)
-   $NameLabExe = GUICtrlCreateLabel("Client Exe", 32, 56, 61, 17)
-   $NameExeIn = GUICtrlCreateInput("RealestaOGL.exe", 32, 80, 81, 21)
-   $OkBut = GUICtrlCreateButton("OK", 16, 216, 113, 25)
-   $bclientl = GUICtrlCreateButton("Click check clients id", 16, 8, 113, 41)
-   $List1 = GUICtrlCreateList("", 16, 112, 113, 97)
-   GUICtrlSetData(-1, "")
-   GUISetState(@SW_SHOW)
-   #EndRegion ### END Koda GUI section ###
+
+#Region ### START Koda GUI section ### Form=
+$Pop = GUICreate("Select client", 182, 265, 0, 60)
+$NameLabExe = GUICtrlCreateLabel("Client Exe", 40, 56, 93, 17, $SS_CENTER)
+$NameExeIn = GUICtrlCreateInput("RealestaOGL.exe", 24, 80, 129, 21, BitOR($GUI_SS_DEFAULT_INPUT,$ES_CENTER))
+$OkBut = GUICtrlCreateButton("OK", 24, 216, 129, 25)
+$bclientl = GUICtrlCreateButton("Click check clients id", 24, 8, 129, 41, $BS_CENTER)
+$List1 = GUICtrlCreateList("", 24, 112, 129, 97)
+GUICtrlSetData(-1, "")
+GUISetState(@SW_SHOW)
+#EndRegion ### END Koda GUI section ###
 
    While 1
 	$nMsg = GUIGetMsg()
@@ -30,7 +30,6 @@ Func pop()
 
 			$memory_g = _MemoryOpen($pid)
 			$hWnd = _GetHwndFromPID($pid)
-
 	        GUISetState(@SW_HIDE)
 			botgui()
 		Else
@@ -47,10 +46,10 @@ Func pop()
 
 
 Func checkid()
-    $aProcessList = ProcessList(GUICtrlRead($NameExeIn))
-    For $i = 1 To $aProcessList[0][0]
-		GUICtrlSetData($List1, $aProcessList[$i][1])
-	  Next
+   $aProcessList = ProcessList(GUICtrlRead($NameExeIn))
+   For $i = 1 To $aProcessList[0][0]
+	  GUICtrlSetData($List1, $aProcessList[$i][1])
+   Next
 EndFunc
 
 Func _GetHwndFromPID($PID)
