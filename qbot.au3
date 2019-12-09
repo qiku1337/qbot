@@ -24,37 +24,66 @@
 $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
-global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$HealHp,$Manacurr,$handle,$uhx,$uhy,$playerx,$playery,$foodx,$foody
-global $id4,$Bot,$namelab,$watchon
+global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$HealHp,$Manacurr,$handle,$mx,$my,$playerx,$playery,$foodx,$foody
+global $id4,$Bot,$namelab,$watchon,$manasx,$manasy
+
+HotKeySet("{insert}", "fish")
+HotKeySet("{del}", "manas")
 
 pop()
 
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-$Bot = GUICreate("Bot by Qiku v4", 184, 214, 0, 60)
-$Runeon = GUICtrlCreateCheckbox("Runemaker on", 72, 80, 73, 25)
-$RuneLabel = GUICtrlCreateLabel("Runemaker", 16, 8, 68, 17)
-$ManaInput = GUICtrlCreateInput("100", 16, 80, 49, 21)
-;$RunemakerInput = GUICtrlCreateInput("{f12}", 16, 24, 49, 21)
-$RunemakerInput = GUICtrlCreateCombo("", 16, 24, 49, 25, BitOR($CBS_DROPDOWN,$CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}", "{f12}")
-$lightlockLabel = GUICtrlCreateLabel("Light hack", 16, 112, 52, 17)
-$Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 72, 104, 173, 25)
-$ManaLabel = GUICtrlCreateLabel("Mana", 88, 8, 36, 17)
-$Manacurr = GUICtrlCreateLabel("0", 94, 24, 36, 17)
-$Afkon = GUICtrlCreateCheckbox("Anti Afk", 72, 160, 57, 25)
-$Label1 = GUICtrlCreateLabel("Mana", 24, 56, 31, 17)
-$foodxy = GUICtrlCreateButton("foodxy", 16, 160, 41, 25)
-global $Slider1 = GUICtrlCreateSlider(16, 128, 153, 33)
-$watchon = GUICtrlCreateCheckbox("Battle logout", 72, 192, 89, 17)
-$NameLabel = GUICtrlCreateLabel("Name", 136, 8, 36, 17)
-$namelab = GUICtrlCreateLabel(".........", 136, 25, 52, 17)
-GUISetState(@SW_SHOW)
-#EndRegion ### END Koda GUI section ###
+	  $Bot = GUICreate("Bot by Qiku v4", 205, 180, 0, 60)
+	  GUICtrlCreateTab(2, 2, 200, 172)
+	  GUICtrlCreateTabItem("Runes")
+	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 12, 81, 73, 25)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 12, 63, 68, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $Label1 = GUICtrlCreateLabel("Mana", 12, 45, 31, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $ManaInput = GUICtrlCreateInput("120", 92, 61, 49, 22)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $RunemakerInput = GUICtrlCreateCombo("{f12}", 140, 61, 49, 25)
+	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $NameLabel = GUICtrlCreateLabel("Name", 12, 27, 36, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $namelab = GUICtrlCreateLabel(".........", 52, 27, 52, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $ManaLabel = GUICtrlCreateLabel("Mana", 100, 45, 36, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $Manacurr = GUICtrlCreateLabel("0", 50, 45, 36, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 12, 109, 57, 25)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $watchon = GUICtrlCreateCheckbox("Battle logout", 12, 141, 89, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlCreateTabItem("Light")
+	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 6, 33, 52, 17)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 68, 29, 173, 25)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Slider1 = GUICtrlCreateSlider(20, 53, 153, 33)
+	  GUICtrlCreateTabItem("Aim")
+	  $foodxy = GUICtrlCreateButton("uhxy", 12, 37, 70, 25)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $manasxy = GUICtrlCreateButton("manasxy", 108, 37, 70, 25)
+	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  GUICtrlCreateTabItem("")
+	  GUISetState(@SW_SHOW)
+	  #EndRegion ### END Koda GUI section ###
 _GUICtrlSlider_SetRange($Slider1, 5, 11130)
 
-   WinSetOnTop("Bot", "", 1)
+   ;WinSetOnTop("Bot", "", 1)
 
    While 1
 	$nMsg = GUIGetMsg()
@@ -65,7 +94,7 @@ _GUICtrlSlider_SetRange($Slider1, 5, 11130)
 
 		 Case $Runeon
 			If _IsChecked($Runeon) Then
-			   $id1 = _Timer_SetTimer($Bot,700,"rune")
+			   $id1 = _Timer_SetTimer($Bot,2000,"rune")
 			Else
 			   _Timer_KillTimer($Bot,$id1)
 			EndIf
@@ -92,7 +121,11 @@ _GUICtrlSlider_SetRange($Slider1, 5, 11130)
 			EndIf
 
 		 Case $foodxy
-			mousepos()
+			mouseposf()
+
+		 Case $manasxy
+			mouseposm()
+
 	EndSwitch
  WEnd
 
@@ -105,6 +138,24 @@ Func _IsChecked($idControlID)
  EndFunc
 
 ;funkcje botowe
+
+Func fish()
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+
+	  MouseClick("right",$foodx, $foody,1,1)
+	  MouseClick("left",$mx,$my,1,1)
+	  ;MouseMove($mx,$my,1)
+   EndFunc
+
+   Func manas()
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+
+	  MouseClick("right",$manasx, $manasy,1,1)
+	  MouseClick("left",$mx,$my,1,1)
+	  ;MouseMove($mx,$my,1)
+EndFunc
 
 func light($1,$2,$3,$4)
    $finalADDR = "0x" & hex($base_adr+$light_static)
@@ -134,9 +185,10 @@ func afk($1,$2,$3,$4)
 
    controlsend($hWnd,"","","{ctrldown}{left}{ctrlup}")
    controlsend($hWnd,"","","{ctrldown}{down}{ctrlup}")
+   ControlSend("","","","{ctrlup}")
    ;Sleep(200)
-   ;ControlClick($clientname,"","","right",1,$foodx,$foody)
-   ;ControlClick($clientname,"","","right",1,$foodx,$foody)
+   ;ControlClick($hWnd,"","","right",1,$foodx,$foody)
+   ;ControlClick($hWnd,"","","right",1,$foodx,$foody)
 
    ;ConsoleWrite("Mouse Button Pressed" & @CRLF & "X=" & $foodx & @CRLF & "Y=" & $foody & @CRLF)
 EndFunc
@@ -166,13 +218,28 @@ EndFunc
 
 EndFunc
 
-Func mousepos()
+Func mouseposf()
    While 1
     Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
     If _IsPressed("01", $dll) Then
         $foodx = MouseGetPos(0)
 		$foody = MouseGetPos(1)
         ConsoleWrite("Mouse Button Pressed" & @CRLF & "X=" & $foodx & @CRLF & "Y=" & $foody & @CRLF)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+WEnd
+EndFunc
+
+Func mouseposm()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $manasx = MouseGetPos(0)
+		$manasy = MouseGetPos(1)
+        ConsoleWrite("Mouse Button Pressed" & @CRLF & "X=" & $manasx & @CRLF & "Y=" & $manasy & @CRLF)
 	    ExitLoop
         While _IsPressed("01", $dll)
             Sleep(10)
