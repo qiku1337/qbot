@@ -1,15 +1,15 @@
-global $NameExeIn, $List1, $hWnd, $foodx, $foody
+global $NameExeIn, $List1, $List2, $hWnd, $foodx, $foody
 Func pop()
 
 #Region ### START Koda GUI section ### Form=
-$Pop = GUICreate("Select client", 182, 265, 0, 60)
-$NameLabExe = GUICtrlCreateLabel("Client Exe", 40, 56, 93, 17, $SS_CENTER)
-$NameExeIn = GUICtrlCreateInput("RealestaOGL.exe", 24, 80, 129, 21, BitOR($GUI_SS_DEFAULT_INPUT,$ES_CENTER))
-$OkBut = GUICtrlCreateButton("OK", 24, 216, 129, 25)
-$bclientl = GUICtrlCreateButton("Click check clients id", 24, 8, 129, 41, $BS_CENTER)
-$List1 = GUICtrlCreateList("", 24, 112, 129, 97)
-GUICtrlSetData(-1, "")
-GUISetState(@SW_SHOW)
+	  $Pop = GUICreate("QBOT Select Client", 179, 367, 0, 60)
+	  $NameLabExe = GUICtrlCreateLabel("Client .exe name", 40, 56, 93, 17, $SS_CENTER)
+	  $NameExeIn = GUICtrlCreateInput("RealestaDX9.exe", 24, 80, 129, 21, BitOR($GUI_SS_DEFAULT_INPUT,$ES_CENTER))
+	  $OkBut = GUICtrlCreateButton("OK", 24, 300, 129, 25)
+	  $bclientl = GUICtrlCreateButton("Click for check clients id", 24, 8, 129, 41, $BS_CENTER)
+	  $List1 = GUICtrlCreateList("", 24, 112, 129, 184)
+	  GUICtrlSetData(-1, "")
+	  GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
    While 1
@@ -49,6 +49,7 @@ Func checkid()
    $aProcessList = ProcessList(GUICtrlRead($NameExeIn))
    For $i = 1 To $aProcessList[0][0]
 	  GUICtrlSetData($List1, $aProcessList[$i][1])
+	  ;GUICtrlSetData($List1, WinGetTitle(_GetHwndFromPID($aProcessList[$i][1])))
    Next
 EndFunc
 
