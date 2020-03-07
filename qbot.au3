@@ -26,84 +26,67 @@ global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot
-global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy
-global $id4,$Bot,$namelab,$watchon,$Slider1
+global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$pixelx,$pixely
+global $id4,$Bot,$namelab,$watchon,$Slider1,$color
 
 pop()
 
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("QBot", 209, 265, 0, 60)
-	  GUICtrlCreateTab(2, 2, 200, 252)
+	  $Bot = GUICreate("QBot", 211, 267, 0, 60)
+
+	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
+
 	  GUICtrlCreateTabItem("Runes")
-	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 116, 157, 73, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 123, 68, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 108, 151, 73, 25)
+	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 60, 117, 68, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label1 = GUICtrlCreateLabel("Mana", 12, 49, 31, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Label1 = GUICtrlCreateLabel("Mana", 4, 43, 31, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaInput = GUICtrlCreateInput("600", 12, 160, 32, 22)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $RunemakerInput = GUICtrlCreateCombo("", 60, 160, 50, 25)
+	  $ManaInput = GUICtrlCreateInput("600", 4, 154, 32, 22)
+	  $RunemakerInput = GUICtrlCreateCombo("", 52, 154, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $NameLabel = GUICtrlCreateLabel("Name", 12, 31, 36, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $NameLabel = GUICtrlCreateLabel("Name", 4, 25, 36, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $namelab = GUICtrlCreateLabel("???", 52, 31, 82, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $namelab = GUICtrlCreateLabel("???", 44, 25, 82, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 12, 137, 108, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 4, 131, 108, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Manacurr = GUICtrlCreateLabel("0", 50, 49, 28, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Manacurr = GUICtrlCreateLabel("0", 42, 43, 28, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 116, 225, 57, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $watchon = GUICtrlCreateCheckbox("Battle logout", 12, 225, 89, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $foodbut = GUICtrlCreateButton("Food xy", 8, 202, 73, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 116, 201, 73, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $Label2 = GUICtrlCreateLabel("Hp", 85, 49, 31, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 108, 219, 57, 17)
+	  $watchon = GUICtrlCreateCheckbox("Battle logout", 4, 219, 89, 17)
+	  $foodbut = GUICtrlCreateButton("Food xy", 0, 196, 73, 17)
+	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 108, 195, 73, 17)
+	  $Label2 = GUICtrlCreateLabel("Hp", 77, 43, 31, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Hpcurr = GUICtrlCreateLabel("0", 122, 49, 36, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Hpcurr = GUICtrlCreateLabel("0", 114, 43, 36, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label3 = GUICtrlCreateLabel("Healbot", 75, 65, 68, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Label3 = GUICtrlCreateLabel("Healbot", 67, 59, 68, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $HpInput = GUICtrlCreateInput("240", 12, 86, 32, 22)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $HealHot = GUICtrlCreateCombo("", 60, 86, 50, 25)
+	  $HpInput = GUICtrlCreateInput("240", 4, 80, 32, 22)
+	  $HealHot = GUICtrlCreateCombo("", 52, 80, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $Healon = GUICtrlCreateCheckbox("Healer On", 116, 83, 73, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $Healon = GUICtrlCreateCheckbox("Healer On", 108, 77, 73, 25)
+
 	  GUICtrlCreateTabItem("Light")
-	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 6, 37, 52, 17)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 60, 33, 173, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $Slider1 = GUICtrlCreateSlider(4, 57, 153, 33)
+	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 4, 35, 52, 17)
+	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 4, 55, 173, 25)
+
 	  GUICtrlCreateTabItem("Aim")
-	  $uhxy = GUICtrlCreateButton("AIM_INSERT", 60, 57, 70, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $manasxy = GUICtrlCreateButton("AIM_PGDN", 60, 137, 70, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
-	  $spearbut = GUICtrlCreateButton("Spear_END", 60, 95, 70, 25)
-	  GUICtrlSetFont(-1, 8, 400, 0, "Arial")
+	  $uhxy = GUICtrlCreateButton("AIM_INSERT", 52, 51, 70, 25)
+	  $manasxy = GUICtrlCreateButton("AIM_PGDN", 52, 131, 70, 25)
+	  $spearbut = GUICtrlCreateButton("Spear_END", 52, 89, 70, 25)
+	  $TabSheet1 = GUICtrlCreateTabItem("Train")
+	  $trainxy = GUICtrlCreateButton("Monster xy", 12, 40, 73, 25)
+	  $trainon = GUICtrlCreateCheckbox("Training on", 92, 42, 81, 17)
+	  ;$pixel = GUICtrlCreateButton("Redbox Pixel", 12, 40, 73, 25)
+
 	  GUICtrlCreateTabItem("")
 	  GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
-_GUICtrlSlider_SetRange($Slider1, 5, 35)
 
 WinSetOnTop($Bot, "", 1)
 
@@ -119,7 +102,7 @@ While 1
 
 		 Case $Runeon
 			If _IsChecked($Runeon) Then
-			   $id1 = _Timer_SetTimer($Bot,2000,"rune")
+			   $id1 = _Timer_SetTimer($Bot,1000*2,"rune")
 			Else
 			   _Timer_KillTimer($Bot,$id1)
 			EndIf
@@ -147,7 +130,7 @@ While 1
 
 		 Case $eatfoodcheck
 			If _IsChecked($eatfoodcheck) Then
-			   $id5 = _Timer_SetTimer($Bot,10000,"eatfood")
+			   $id5 = _Timer_SetTimer($Bot,1000*10,"eatfood")
 			Else
 			   _Timer_KillTimer($Bot,$id5)
 			EndIf
@@ -157,6 +140,13 @@ While 1
 			   $id6 = _Timer_SetTimer($Bot,100,"healer")
 			Else
 			   _Timer_KillTimer($Bot,$id6)
+			EndIf
+
+		 Case $trainon
+			If _IsChecked($trainon) Then
+			   $id7 = _Timer_SetTimer($Bot,1000*10,"train")
+			Else
+			   _Timer_KillTimer($Bot,$id7)
 			EndIf
 
 		 Case $uhxy
@@ -170,6 +160,10 @@ While 1
 
 		 Case $spearbut
 			mouseposs()
+
+		 Case $trainxy
+			mousepost()
+
 	EndSwitch
  WEnd
 
@@ -200,14 +194,11 @@ Func manas()
 	  MouseClick("right",$manasx, $manasy,1,1)
 	  MouseClick("left",$mx,$my,1,1)
 	  Sleep(20)
-	  ;MouseMove($mx,$my,1)
 EndFunc
 
 Func spear()
 	  $mx = MouseGetPos(0)
 	  $my = MouseGetPos(1)
-
-	  ;	  MouseClickDrag("left",$mx, $my,$spearx,$speary,1)
 
 	  MouseDown("left")
 	  MouseMove($spearx,$speary,1)
@@ -226,19 +217,22 @@ EndFunc
 
 func light($1,$2,$3,$4)
    $finalADDR = "0x" & hex($base_adr+$light_static)
-   _MemoryPointerWrite($finalADDR, $memory_g, $light_offset, GUICtrlRead($Slider1))
+   _MemoryPointerWrite($finalADDR, $memory_g, $light_offset, 55060)
 EndFunc
 
 func watch($1,$2,$3,$4)
       $finalADDR = "0x" & hex($base_adr+$battle_static)
 	  $battleval = _MemoryPointerRead($finalADDR, $memory_g, $battle_offset)
       ConsoleWrite($battleval[1])
-	  if ($battleval[1]>419) Then
+	  if ($battleval[1]>420) Then
 		 controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
 		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
 		 GUICtrlSetState($watchon,$GUI_UNCHECKED)
 		 _Timer_KillTimer($Bot,$id4)
 	  EndIf
+	  ConsoleWrite($battleval[1])
+	  unstuck()
+
 EndFunc
 
 func afk($1,$2,$3,$4)
@@ -247,6 +241,8 @@ func afk($1,$2,$3,$4)
    Sleep(10)
    controlsend($hWnd,"","","{ctrldown}{up}{ctrlup}")
    Sleep(10)
+
+   unstuck()
 
 EndFunc
 
@@ -264,15 +260,14 @@ func rune($1,$2,$3,$4)
    GUICtrlSetData($Manacurr,$mana[1])
    GUICtrlSetData($namelab,$name[1])
 
-	  $vkvalue = 17
-	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
-	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",2,"long",0) ;To release a key
-
 	  if $mana[1] >= $manaclient Then
 		 $spellname = guictrlread($RunemakerInput)
 		 controlsend($hWnd,"","",$spellname)
 	  EndIf
-   EndFunc
+
+	  unstuck()
+
+EndFunc
 
 func healer($1,$2,$3,$4)
    $hpclient = guictrlread($HpInput)
@@ -289,16 +284,33 @@ func healer($1,$2,$3,$4)
    GUICtrlSetData($Hpcurr, $hp[1])
    GUICtrlSetData($Manacurr,$mana[1])
 
-   	  $vkvalue = 17
-	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
-	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",2,"long",0) ;To release a key
-
 	  if $hp[1] <= $hpclient And $mana[1] >= $manaclient Then
 		 $spellname = guictrlread($HealHot)
 		 controlsend($hWnd,"","",$spellname)
 		 ConsoleWrite($mana)
 	  EndIf
+
+   unstuck()
+
 EndFunc
+
+func train($1,$2,$3,$4)
+
+   $finalADDR = "0x" & hex($base_adr+$ifattack_static)
+   $ifattack = _MemoryPointerRead($finalADDR, $memory_g, $ifattack_offset)
+   if $ifattack[1] == 0 Then
+	  $windowTitle = WinGetTitle("[ACTIVE]")
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+	  WinActivate($hWnd)
+	  MouseClick("right",$trainx, $trainy,1,1)
+	  MouseMove($mx,$my,1)
+	  WinActivate($windowTitle)
+   EndIf
+EndFunc
+
+; Mouse positions <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Func mouseposa()
    While 1
@@ -312,7 +324,7 @@ Func mouseposa()
             Sleep(10)
         WEnd
     EndIf
-WEnd
+   WEnd
 EndFunc
 
 Func mouseposm()
@@ -326,7 +338,7 @@ Func mouseposm()
             Sleep(10)
         WEnd
     EndIf
-WEnd
+   WEnd
 EndFunc
 
 Func mouseposf()
@@ -340,7 +352,7 @@ Func mouseposf()
             Sleep(10)
         WEnd
     EndIf
-WEnd
+   WEnd
 EndFunc
 
 Func mouseposs()
@@ -354,5 +366,41 @@ Func mouseposs()
             Sleep(10)
         WEnd
     EndIf
-WEnd
+   WEnd
 EndFunc
+
+Func mousepost()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $trainx = MouseGetPos(0)
+		$trainy = MouseGetPos(1)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func getpixel()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+	    $pixelx = MouseGetPos(0)
+		$pixely = MouseGetPos(1)
+		$color = PixelGetColor($pixelx,$pixely,$hWnd)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func unstuck()
+   	  $vkvalue = 17
+	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
+	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",2,"long",0) ;To release a key
+EndFunc
+
