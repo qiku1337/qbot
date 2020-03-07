@@ -78,6 +78,8 @@ Func botgui()
 	  $uhxy = GUICtrlCreateButton("AIM_INSERT", 52, 51, 70, 25)
 	  $manasxy = GUICtrlCreateButton("AIM_PGDN", 52, 131, 70, 25)
 	  $spearbut = GUICtrlCreateButton("Spear_END", 52, 89, 70, 25)
+	  $hoton = GUICtrlCreateCheckbox("Hotkeys on", 52, 162, 81, 17)
+
 	  $TabSheet1 = GUICtrlCreateTabItem("Train")
 	  $trainxy = GUICtrlCreateButton("Monster xy", 12, 40, 73, 25)
 	  $trainon = GUICtrlCreateCheckbox("Training on", 92, 42, 81, 17)
@@ -89,10 +91,6 @@ Func botgui()
 
 
 WinSetOnTop($Bot, "", 1)
-
-HotKeySet("{insert}", "aim")
-HotKeySet("{pgdn}", "manas")
-HotKeySet("{end}", "spear")
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -147,6 +145,17 @@ While 1
 			   $id7 = _Timer_SetTimer($Bot,1000*10,"train")
 			Else
 			   _Timer_KillTimer($Bot,$id7)
+			EndIf
+
+		 Case $hoton
+			If _IsChecked($hoton) Then
+			   HotKeySet("{insert}", "aim")
+			   HotKeySet("{pgdn}", "manas")
+			   HotKeySet("{end}", "spear")
+			Else
+			   HotKeySet("{insert}")
+			   HotKeySet("{pgdn}")
+			   HotKeySet("{end}")
 			EndIf
 
 		 Case $uhxy
