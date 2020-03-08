@@ -25,7 +25,7 @@
 global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
-global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot
+global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal
 global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$pixelx,$pixely
 global $id4,$Bot,$namelab,$watchon,$Slider1,$color
 
@@ -44,7 +44,8 @@ Func botgui()
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
 	  $Label1 = GUICtrlCreateLabel("Mana", 4, 43, 31, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaInput = GUICtrlCreateInput("600", 4, 154, 32, 22)
+	  $ManaInput = GUICtrlCreateInput("100", 4, 154, 32, 22)
+
 	  $RunemakerInput = GUICtrlCreateCombo("", 52, 154, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
 	  $NameLabel = GUICtrlCreateLabel("Name", 4, 25, 36, 17)
@@ -65,7 +66,8 @@ Func botgui()
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
 	  $Label3 = GUICtrlCreateLabel("Healbot", 67, 59, 68, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $HpInput = GUICtrlCreateInput("240", 4, 80, 32, 22)
+	  $HpInput = GUICtrlCreateInput("300", 4, 80, 32, 22)
+	  $Manaheal = GUICtrlCreateInput("25", 4, 100, 32, 22)
 	  $HealHot = GUICtrlCreateCombo("", 52, 80, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
 	  $Healon = GUICtrlCreateCheckbox("Healer On", 108, 77, 73, 25)
@@ -280,7 +282,7 @@ EndFunc
 
 func healer($1,$2,$3,$4)
    $hpclient = guictrlread($HpInput)
-   $manaclient = guictrlread($ManaInput)
+   $manaclient = guictrlread($Manaheal)
 
    $finalADDR = "0x" & hex($base_adr+$hp_static)
    $hp = _MemoryPointerRead($finalADDR, $memory_g, $hp_offset,"double")
