@@ -34,7 +34,7 @@ pop()
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("QBot", 211, 267, 0, 60)
+	  $Bot = GUICreate(StringTrimLeft(WinGetTitle($hWnd),15), 211, 267, 0, 60)
 
 	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
 
@@ -105,7 +105,7 @@ While 1
 		 MsgBox($MB_OK,"Info","Funkcja food nie dziala w tle. Po wcisnieciu przycisku food xy, bot czeka na klikniecie w miejsce fooda lewym przyciskiem myszy")
 
 	  Case $butinfo3
-		 MsgBox($MB_OK,"Info","Po wcisnieciu przyciskow bot czeka na lewy przycisk myszy. Hotkeye pod klawiszami PgDn, Insert działaja na zasadzie 'strzelania', uzywane np. do wedki, run. Hotkey pod klawiszem END, sluzy do szybkiego podnoszenia itemow z gleby. Zasada uzywania: Po ustawieniu miejsca runy/wedki/miejsca do ktorego ma byc przeniesiony item, nakierowac kursor myszy oraz wcisnac hotkey.")
+		 MsgBox($MB_OK,"Info","Po wcisnieciu przyciskow bot czeka na lewy przycisk myszy. Hotkeye pod klawiszami PgDn, Insert działaja na zasadzie 'strzelania', uzywane np. do wedki, run. Hotkey pod klawiszem END, sluzy do szybkiego podnoszenia itemow z gleby. Zasada uzywania: Po ustawieniu miejsca runy/wedki/miejsca do ktorego ma byc przeniesiony item, nakierowac kursor myszy oraz wcisnac hotkey. Przytrzymanie hotkeya grozi zawieszeniem bota")
 
 	  Case $Runeon
 		 If _IsChecked($Runeon) Then
@@ -241,7 +241,6 @@ EndFunc
 func watch($1,$2,$3,$4)
       $finalADDR = "0x" & hex($base_adr+$battle_static)
 	  $battleval = _MemoryPointerRead($finalADDR, $memory_g, $battle_offset)
-      ConsoleWrite($battleval[1])
 	  if ($battleval[1]>420) Then
 		 controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
 		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
