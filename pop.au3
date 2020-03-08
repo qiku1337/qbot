@@ -7,6 +7,7 @@ Func pop()
 	  $NameExeIn = GUICtrlCreateInput("RealestaDX9.exe", 24, 80, 129, 21, BitOR($GUI_SS_DEFAULT_INPUT,$ES_CENTER))
 	  $OkBut = GUICtrlCreateButton("OK", 24, 300, 129, 25)
 	  $bclientl = GUICtrlCreateButton("Click for check clients id", 24, 8, 129, 41, $BS_CENTER)
+	  $butinfo1 = GUICtrlCreateButton("?", 155, 8, 20, 20, $BS_CENTER)
 	  $List1 = GUICtrlCreateList("", 24, 112, 129, 184)
 	  GUICtrlSetData(-1, "")
 	  GUISetState(@SW_SHOW)
@@ -19,11 +20,12 @@ Func pop()
 			Exit
 
 	  Case $OkBut
-	    $clientname = GUICtrlRead($NameExeIn)
 
-		if ProcessExists($clientname) Then
+		 $wybor = ControlCommand($Pop, "", $List1, "GetCurrentSelection")
+		 if ProcessExists($wybor) Then
 		    SetPrivilege("SeDebugPrivilege", 1)
-			$pid = ControlCommand($Pop, "", $List1, "GetCurrentSelection")
+
+			$pid = $wybor
 
 			$kryProc = _Process_Open($pid)
 			global $base_adr = _Process_GetBaseAddress($kryProc)
@@ -34,12 +36,15 @@ Func pop()
 			botgui()
 		Else
 
-		   MsgBox(NULL,"Error", "Cos sie zjebalo")
+		   MsgBox(NULL,"Error", "Wybierz najpierw client ID!!")
 
 	    EndIf
      Case $bclientl
 		   GUICtrlSetData($List1, "")
 		   checkid()
+
+     Case $butinfo1
+	    MsgBox($MB_OK,"Info","Najpierw kliknij check clients id, nastepnie zaznacz id clienta i przycisk ok")
 	EndSwitch
  WEnd
  EndFunc

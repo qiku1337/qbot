@@ -39,13 +39,13 @@ Func botgui()
 	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
 
 	  GUICtrlCreateTabItem("Runes")
+	  $butinfo2 = GUICtrlCreateButton("?", 175, 2, 20, 20, $BS_CENTER)
 	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 108, 151, 73, 25)
 	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 60, 117, 68, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
 	  $Label1 = GUICtrlCreateLabel("Mana", 4, 43, 31, 17)
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
 	  $ManaInput = GUICtrlCreateInput("100", 4, 154, 32, 22)
-
 	  $RunemakerInput = GUICtrlCreateCombo("", 52, 154, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
 	  $NameLabel = GUICtrlCreateLabel("Name", 4, 25, 36, 17)
@@ -77,6 +77,7 @@ Func botgui()
 	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 4, 55, 173, 25)
 
 	  GUICtrlCreateTabItem("Aim")
+	  $butinfo3 = GUICtrlCreateButton("?", 175, 2, 20, 20, $BS_CENTER)
 	  $uhxy = GUICtrlCreateButton("AIM_INSERT", 52, 51, 70, 25)
 	  $manasxy = GUICtrlCreateButton("AIM_PGDN", 52, 131, 70, 25)
 	  $spearbut = GUICtrlCreateButton("Spear_END", 52, 89, 70, 25)
@@ -95,85 +96,91 @@ Func botgui()
 WinSetOnTop($Bot, "", 1)
 
 While 1
-	$nMsg = GUIGetMsg()
-	Switch $nMsg
-		Case $GUI_EVENT_CLOSE
-			Exit
+   $nMsg = GUIGetMsg()
+   Switch $nMsg
+	  Case $GUI_EVENT_CLOSE
+		 Exit
 
-		 Case $Runeon
-			If _IsChecked($Runeon) Then
-			   $id1 = _Timer_SetTimer($Bot,1000*2,"rune")
-			Else
-			   _Timer_KillTimer($Bot,$id1)
-			EndIf
+	  Case $butinfo2
+		 MsgBox($MB_OK,"Info","Funkcja food nie dziala w tle. Po wcisnieciu przycisku food xy, bot czeka na klikniecie w miejsce fooda lewym przyciskiem myszy")
 
-	    Case $Lighton
-			If _IsChecked($Lighton) Then
-			   $id2 = _Timer_SetTimer($Bot,100,"light")
-			Else
-			   _Timer_KillTimer($Bot,$id2)
-			EndIf
+	  Case $butinfo3
+		 MsgBox($MB_OK,"Info","Po wcisnieciu przyciskow bot czeka na lewy przycisk myszy. Hotkeye pod klawiszami PgDn, Insert działaja na zasadzie 'strzelania', uzywane np. do wedki, run. Hotkey pod klawiszem END, sluzy do szybkiego podnoszenia itemow z gleby. Zasada uzywania: Po ustawieniu miejsca runy/wedki/miejsca do ktorego ma byc przeniesiony item, nakierowac kursor myszy oraz wcisnac hotkey.")
 
-	    Case $Afkon
-			If _IsChecked($Afkon) Then
-			   $id3 = _Timer_SetTimer($Bot,1000*60*5,"afk")
-			Else
-			   _Timer_KillTimer($Bot,$id3)
-			EndIf
+	  Case $Runeon
+		 If _IsChecked($Runeon) Then
+		    $id1 = _Timer_SetTimer($Bot,1000*2,"rune")
+		 Else
+		    _Timer_KillTimer($Bot,$id1)
+		 EndIf
 
-		 Case $watchon
-			If _IsChecked($watchon) Then
-			   $id4 = _Timer_SetTimer($Bot,50,"watch")
-			Else
-			   _Timer_KillTimer($Bot,$id4)
-			EndIf
+	  Case $Lighton
+		 If _IsChecked($Lighton) Then
+			$id2 = _Timer_SetTimer($Bot,100,"light")
+		 Else
+			_Timer_KillTimer($Bot,$id2)
+		 EndIf
 
-		 Case $eatfoodcheck
-			If _IsChecked($eatfoodcheck) Then
-			   $id5 = _Timer_SetTimer($Bot,1000*10,"eatfood")
-			Else
-			   _Timer_KillTimer($Bot,$id5)
-			EndIf
+	  Case $Afkon
+		 If _IsChecked($Afkon) Then
+			$id3 = _Timer_SetTimer($Bot,1000*60*5,"afk")
+		 Else
+			_Timer_KillTimer($Bot,$id3)
+		 EndIf
 
-		 Case $Healon
-			If _IsChecked($Healon) Then
-			   $id6 = _Timer_SetTimer($Bot,100,"healer")
-			Else
-			   _Timer_KillTimer($Bot,$id6)
-			EndIf
+	  Case $watchon
+		 If _IsChecked($watchon) Then
+			$id4 = _Timer_SetTimer($Bot,50,"watch")
+		 Else
+			_Timer_KillTimer($Bot,$id4)
+		 EndIf
 
-		 Case $trainon
-			If _IsChecked($trainon) Then
-			   $id7 = _Timer_SetTimer($Bot,1000*10,"train")
-			Else
-			   _Timer_KillTimer($Bot,$id7)
-			EndIf
+	  Case $eatfoodcheck
+		 If _IsChecked($eatfoodcheck) Then
+			$id5 = _Timer_SetTimer($Bot,1000*10,"eatfood")
+		 Else
+			_Timer_KillTimer($Bot,$id5)
+		 EndIf
 
-		 Case $hoton
-			If _IsChecked($hoton) Then
-			   HotKeySet("{insert}", "aim")
-			   HotKeySet("{pgdn}", "manas")
-			   HotKeySet("{end}", "spear")
-			Else
-			   HotKeySet("{insert}")
-			   HotKeySet("{pgdn}")
-			   HotKeySet("{end}")
-			EndIf
+	  Case $Healon
+		 If _IsChecked($Healon) Then
+			$id6 = _Timer_SetTimer($Bot,100,"healer")
+		 Else
+			_Timer_KillTimer($Bot,$id6)
+		 EndIf
 
-		 Case $uhxy
-			mouseposa()
+	  Case $trainon
+		 If _IsChecked($trainon) Then
+			$id7 = _Timer_SetTimer($Bot,1000*10,"train")
+		 Else
+			_Timer_KillTimer($Bot,$id7)
+		 EndIf
 
-		 Case $manasxy
-			mouseposm()
+	  Case $hoton
+		 If _IsChecked($hoton) Then
+			HotKeySet("{insert}", "aim")
+			HotKeySet("{pgdn}", "manas")
+			HotKeySet("{end}", "spear")
+		 Else
+			HotKeySet("{insert}")
+			HotKeySet("{pgdn}")
+			HotKeySet("{end}")
+		 EndIf
 
-		 Case $foodbut
-			mouseposf()
+	  Case $uhxy
+		 mouseposa()
 
-		 Case $spearbut
-			mouseposs()
+	  Case $manasxy
+		 mouseposm()
 
-		 Case $trainxy
-			mousepost()
+	  Case $foodbut
+		 mouseposf()
+
+	  Case $spearbut
+		 mouseposs()
+
+	  Case $trainxy
+		 mousepost()
 
 	EndSwitch
  WEnd
