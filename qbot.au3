@@ -34,7 +34,7 @@ pop()
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate(StringTrimLeft(WinGetTitle($hWnd),15), 211, 267, 0, 60)
+	  $Bot = GUICreate("Qbot V3", 211, 267, 0, 60)
 
 	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
 
@@ -282,8 +282,6 @@ func rune($1,$2,$3,$4)
 		 controlsend($hWnd,"","",$spellname)
 	  EndIf
 
-	  unstuck()
-
 EndFunc
 
 func healer($1,$2,$3,$4)
@@ -306,8 +304,6 @@ func healer($1,$2,$3,$4)
 		 controlsend($hWnd,"","",$spellname)
 		 ConsoleWrite($mana)
 	  EndIf
-
-   unstuck()
 
 EndFunc
 
@@ -417,7 +413,7 @@ EndFunc
 
 Func unstuck()
    	  $vkvalue = 17
-	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
+	  ;DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
 	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",2,"long",0) ;To release a key
 EndFunc
 
