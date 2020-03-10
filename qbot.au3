@@ -246,10 +246,9 @@ func watch($1,$2,$3,$4)
 		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
 		 GUICtrlSetState($watchon,$GUI_UNCHECKED)
 		 _Timer_KillTimer($Bot,$id4)
+		 unstuck()
 	  EndIf
 	  ConsoleWrite($battleval[1])
-	  unstuck()
-
 EndFunc
 
 func afk($1,$2,$3,$4)
@@ -413,7 +412,7 @@ EndFunc
 
 Func unstuck()
    	  $vkvalue = 17
-	  ;DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
+	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",0,"long",0) ;To press a key
 	  DllCall($dll,"int","keybd_event","int",$vkvalue,"int",0,"long",2,"long",0) ;To release a key
 EndFunc
 
