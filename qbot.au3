@@ -13,6 +13,7 @@
 #include <StaticConstants.au3>
 #include <nomad.au3>
 #include <pop.au3>
+#include <help.au3>
 #include <GuiSlider.au3>
 #include <ComboConstants.au3>
 #include <Process.au3>
@@ -26,7 +27,7 @@ global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal
-global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$pixelx,$pixely
+global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy
 global $id4,$Bot,$namelab,$watchon,$Slider1,$color
 
 pop()
@@ -34,59 +35,94 @@ pop()
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot V3", 211, 267, 0, 60)
-
+	  $Bot = GUICreate("Qbot V3", 213, 269, 0, 60)
 	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
-
 	  GUICtrlCreateTabItem("Runes")
-	  $butinfo2 = GUICtrlCreateButton("?", 175, 2, 20, 20, $BS_CENTER)
-	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 108, 151, 73, 25)
-	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 60, 117, 68, 17)
+	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
+
+	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 124, 161, 73, 25)
+
+	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 127, 68, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label1 = GUICtrlCreateLabel("Mana", 4, 43, 31, 17)
+	  $Label1 = GUICtrlCreateLabel("Mana", 20, 45, 31, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaInput = GUICtrlCreateInput("100", 4, 154, 32, 22)
-	  $RunemakerInput = GUICtrlCreateCombo("", 52, 154, 50, 25)
+	  $ManaInput = GUICtrlCreateInput("100", 20, 164, 32, 22)
+
+	  $RunemakerInput = GUICtrlCreateCombo("", 60, 164, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
-	  $NameLabel = GUICtrlCreateLabel("Name", 4, 25, 36, 17)
+
+	  $NameLabel = GUICtrlCreateLabel("Name", 20, 27, 36, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $namelab = GUICtrlCreateLabel("???", 44, 25, 82, 17)
+	  $namelab = GUICtrlCreateLabel("???", 60, 27, 58, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 4, 131, 108, 17)
+	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 44, 141, 108, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Manacurr = GUICtrlCreateLabel("0", 42, 43, 28, 17)
+	  $Manacurr = GUICtrlCreateLabel("0", 58, 45, 28, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 108, 219, 57, 17)
-	  $watchon = GUICtrlCreateCheckbox("Battle logout", 4, 219, 89, 17)
-	  $foodbut = GUICtrlCreateButton("Food xy", 0, 196, 73, 17)
-	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 108, 195, 73, 17)
-	  $Label2 = GUICtrlCreateLabel("Hp", 77, 43, 31, 17)
+	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 124, 229, 57, 17)
+
+	  $watchon = GUICtrlCreateCheckbox("Battle logout", 20, 229, 89, 17)
+
+	  $foodbut = GUICtrlCreateButton("Food xy", 16, 206, 73, 17)
+
+	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 205, 73, 17)
+
+	  $Label2 = GUICtrlCreateLabel("Hp", 21, 61, 31, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Hpcurr = GUICtrlCreateLabel("0", 114, 43, 36, 17)
+	  $Hpcurr = GUICtrlCreateLabel("0", 58, 61, 36, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label3 = GUICtrlCreateLabel("Healbot", 67, 59, 68, 17)
+	  $Label3 = GUICtrlCreateLabel("Healbot", 91, 69, 68, 17)
+
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $HpInput = GUICtrlCreateInput("300", 4, 80, 32, 22)
-	  $Manaheal = GUICtrlCreateInput("25", 4, 100, 32, 22)
-	  $HealHot = GUICtrlCreateCombo("", 52, 80, 50, 25)
+	  $HpInput = GUICtrlCreateInput("300", 20, 82, 32, 22)
+
+	  $Manaheal = GUICtrlCreateInput("25", 20, 102, 32, 22)
+
+	  $HealHot = GUICtrlCreateCombo("", 60, 90, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
-	  $Healon = GUICtrlCreateCheckbox("Healer On", 108, 77, 73, 25)
+
+	  $Healon = GUICtrlCreateCheckbox("Healer On", 124, 87, 73, 25)
 
 	  GUICtrlCreateTabItem("Light")
-	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 4, 35, 52, 17)
-	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 4, 55, 173, 25)
+	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 28, 29, 52, 17)
+
+	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 36, 49, 117, 25)
 
 	  GUICtrlCreateTabItem("Aim")
-	  $butinfo3 = GUICtrlCreateButton("?", 175, 2, 20, 20, $BS_CENTER)
-	  $uhxy = GUICtrlCreateButton("AIM_INSERT", 52, 51, 70, 25)
-	  $manasxy = GUICtrlCreateButton("AIM_PGDN", 52, 131, 70, 25)
-	  $spearbut = GUICtrlCreateButton("Spear_END", 52, 89, 70, 25)
-	  $hoton = GUICtrlCreateCheckbox("Hotkeys on", 52, 162, 81, 17)
+	  $butinfo3 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
+
+	  $uhxy = GUICtrlCreateButton("SHOOT1_XY", 12, 52, 70, 25)
+
+	  $manasxy = GUICtrlCreateButton("SHOOT2_XY", 12, 82, 70, 25)
+
+	  $spearbut = GUICtrlCreateButton("DRAG1_XY", 12, 142, 70, 25)
+
+	  $sdxy = GUICtrlCreateButton("SHOOT3_XY", 12, 112, 70, 25)
+
+	  $hoton = GUICtrlCreateCheckbox("Hotkeys on", 60, 196, 81, 17)
+
+	  $Label4 = GUICtrlCreateLabel("Key", 132, 29, 23, 18)
+
+	  $hotkey_1 = GUICtrlCreateInput("insert", 122, 53, 49, 22)
+
+	  $hotkey_2 = GUICtrlCreateInput("pgdn", 122, 82, 49, 22)
+
+	  $hotkey_3 = GUICtrlCreateInput("", 122, 112, 49, 22)
+
+	  $hotkey_4 = GUICtrlCreateInput("end", 122, 143, 49, 22)
 
 	  $TabSheet1 = GUICtrlCreateTabItem("Train")
-	  $trainxy = GUICtrlCreateButton("Monster xy", 12, 40, 73, 25)
-	  $trainon = GUICtrlCreateCheckbox("Training on", 92, 42, 81, 17)
-	  ;$pixel = GUICtrlCreateButton("Redbox Pixel", 12, 40, 73, 25)
+	  $trainxy = GUICtrlCreateButton("Monster xy", 4, 34, 73, 25)
+
+	  $trainon = GUICtrlCreateCheckbox("Training on", 84, 36, 81, 17)
 
 	  GUICtrlCreateTabItem("")
 	  GUISetState(@SW_SHOW)
@@ -102,10 +138,10 @@ While 1
 		 Exit
 
 	  Case $butinfo2
-		 MsgBox($MB_OK,"Info","Funkcja food nie dziala w tle. Po wcisnieciu przycisku food xy, bot czeka na klikniecie w miejsce fooda lewym przyciskiem myszy")
+		 help1()
 
 	  Case $butinfo3
-		 MsgBox($MB_OK,"Info","Po wcisnieciu przyciskow bot czeka na lewy przycisk myszy. Hotkeye pod klawiszami PgDn, Insert działaja na zasadzie 'strzelania', uzywane np. do wedki, run. Hotkey pod klawiszem END, sluzy do szybkiego podnoszenia itemow z gleby. Zasada uzywania: Po ustawieniu miejsca runy/wedki/miejsca do ktorego ma byc przeniesiony item, nakierowac kursor myszy oraz wcisnac hotkey. Przytrzymanie hotkeya grozi zawieszeniem bota")
+		 help2()
 
 	  Case $Runeon
 		 If _IsChecked($Runeon) Then
@@ -158,13 +194,19 @@ While 1
 
 	  Case $hoton
 		 If _IsChecked($hoton) Then
-			HotKeySet("{insert}", "aim")
-			HotKeySet("{pgdn}", "manas")
-			HotKeySet("{end}", "spear")
+			HotKeySet("{" & guictrlread($hotkey_1) & "}", "aim")
+			   $hotkey1temp = "{" & guictrlread($hotkey_1) & "}"
+			HotKeySet("{" & guictrlread($hotkey_2) & "}", "manas")
+			   $hotkey2temp = "{" & guictrlread($hotkey_2) & "}"
+			HotKeySet("{" & guictrlread($hotkey_3) & "}", "esde")
+			   $hotkey3temp = "{" & guictrlread($hotkey_3) & "}"
+			HotKeySet("{" & guictrlread($hotkey_4) & "}", "spear")
+			   $hotkey4temp = "{" & guictrlread($hotkey_4) & "}"
 		 Else
-			HotKeySet("{insert}")
-			HotKeySet("{pgdn}")
-			HotKeySet("{end}")
+			HotKeySet($hotkey1temp)
+			HotKeySet($hotkey2temp)
+			HotKeySet($hotkey3temp)
+			HotKeySet($hotkey4temp)
 		 EndIf
 
 	  Case $uhxy
@@ -172,6 +214,9 @@ While 1
 
 	  Case $manasxy
 		 mouseposm()
+
+	  Case $sdxy
+		 mousepossd()
 
 	  Case $foodbut
 		 mouseposf()
@@ -211,7 +256,16 @@ Func manas()
 
 	  MouseClick("right",$manasx, $manasy,1,1)
 	  MouseClick("left",$mx,$my,1,1)
-	  Sleep(20)
+	  ;Sleep(20)
+EndFunc
+
+Func esde()
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+
+	  MouseClick("right",$sdx, $sdy,1,1)
+	  MouseClick("left",$mx,$my,1,1)
+	  ;Sleep(20)
 EndFunc
 
 Func spear()
@@ -223,7 +277,7 @@ Func spear()
 	  MouseUp("left")
       Send("{enter}")
 	  MouseMove($mx,$my,1)
-	  Sleep(50)
+	  ;Sleep(50)
 EndFunc
 
 Func eatfood($1,$2,$3,$4)
@@ -387,6 +441,20 @@ Func mousepost()
     If _IsPressed("01", $dll) Then
         $trainx = MouseGetPos(0)
 		$trainy = MouseGetPos(1)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func mousepossd()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $sdx = MouseGetPos(0)
+		$sdy = MouseGetPos(1)
 	    ExitLoop
         While _IsPressed("01", $dll)
             Sleep(10)
