@@ -17,6 +17,7 @@
 #include <GuiSlider.au3>
 #include <ComboConstants.au3>
 #include <Process.au3>
+#include <SendMessage.au3>
 
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_icon=qbot.ico
@@ -152,14 +153,14 @@ While 1
 
 	  Case $Lighton
 		 If _IsChecked($Lighton) Then
-			$id2 = _Timer_SetTimer($Bot,100,"light")
+			$id2 = _Timer_SetTimer($Bot,20,"light")
 		 Else
 			_Timer_KillTimer($Bot,$id2)
 		 EndIf
 
 	  Case $Afkon
 		 If _IsChecked($Afkon) Then
-			$id3 = _Timer_SetTimer($Bot,1000*60*5,"afk")
+			$id3 = _Timer_SetTimer($Bot,1000*60*10,"afk")
 		 Else
 			_Timer_KillTimer($Bot,$id3)
 		 EndIf
@@ -283,6 +284,7 @@ EndFunc
 Func eatfood($1,$2,$3,$4)
 	  $mx = MouseGetPos(0)
 	  $my = MouseGetPos(1)
+	  WinActivate($hWnd)
 	  MouseClick("right",$foodx, $foody,1,1)
 	  MouseMove($mx,$my,1)
 EndFunc
@@ -307,13 +309,16 @@ EndFunc
 
 func afk($1,$2,$3,$4)
 
-   controlsend($hWnd,"","","{ctrldown}{left}{ctrlup}")
-   Sleep(10)
-   controlsend($hWnd,"","","{ctrldown}{up}{ctrlup}")
-   Sleep(10)
+   WinActivate($hWnd)
+   Send("^{UP}")
+   Send("^{DOWN}")
 
-   unstuck()
+   ;unstuck()
 
+EndFunc
+
+Func _MakeLong($LoWord, $HiWord)
+    Return BitOR($HiWord * 0x10000, BitAND($LoWord, 0xFFFF))
 EndFunc
 
 func rune($1,$2,$3,$4)
@@ -325,7 +330,7 @@ func rune($1,$2,$3,$4)
    $namefinal = "0x" & hex($base_adr+$name_static)
    $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[10]")
 
-   $handle = WinGetHandle($hWnd, "")
+   ;$handle = WinGetHandle($hWnd, "")
 
    GUICtrlSetData($Manacurr,$mana[1])
    GUICtrlSetData($namelab,$name[1])
@@ -347,7 +352,7 @@ func healer($1,$2,$3,$4)
    $finalADDRm = "0x" & hex($base_adr+$mana_static)
    $mana = _MemoryPointerRead($finalADDRm, $memory_g, $mana_offset,"double")
 
-   $handle = WinGetHandle($hWnd, "")
+   ;$handle = WinGetHandle($hWnd, "")
 
    GUICtrlSetData($Hpcurr, $hp[1])
    GUICtrlSetData($Manacurr,$mana[1])
