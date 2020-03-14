@@ -1,5 +1,5 @@
 func help1()
-    MsgBox($MB_OK,"Info","Funkcja food nie dziala w tle. Po wcisnieciu przycisku food xy, bot czeka na klikniecie w miejsce fooda lewym przyciskiem myszy")
+    MsgBox($MB_OK,"Info","Funkcja food nie dziala w tle. Po wcisnieciu przycisku food xy, bot czeka na klikniecie w miejsce fooda lewym przyciskiem myszy. Anti afk 1 - dziala w tle, bug - czasem postac chodzi, anti afk 2 - nie dziala w tle, postac nie chodzi")
 EndFunc
 
 func help2()

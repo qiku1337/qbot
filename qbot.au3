@@ -28,20 +28,20 @@ global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal
-global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy
-global $id4,$Bot,$namelab,$watchon,$Slider1,$color
+global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay
+global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm
 
 pop()
 
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot V3", 213, 269, 0, 60)
-	  $Ramka = GUICtrlCreateTab(2, 2, 200, 252)
+	  $Bot = GUICreate("Qbot V3.3", 213, 289, 0, 60)
+	  $Ramka = GUICtrlCreateTab(2, 2, 210, 282)
 	  GUICtrlCreateTabItem("Runes")
 	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
 
-	  $Runeon = GUICtrlCreateCheckbox("Runemaker on", 124, 161, 73, 25)
+      $Runeon = GUICtrlCreateCheckbox("Runemaker on", 124, 161, 73, 25)
 
 	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 127, 68, 17)
 
@@ -66,13 +66,20 @@ Func botgui()
 	  $Manacurr = GUICtrlCreateLabel("0", 58, 45, 28, 17)
 
 	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 124, 229, 57, 17)
+	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 124, 229, 60, 17)
+	  $Afkon2 = GUICtrlCreateCheckbox("Anti Afk2", 124, 249, 60, 17)
 
-	  $watchon = GUICtrlCreateCheckbox("Battle logout", 20, 229, 89, 17)
+	  $watchon = GUICtrlCreateCheckbox("Battle logout", 20, 210, 89, 17)
 
-	  $foodbut = GUICtrlCreateButton("Food xy", 16, 206, 73, 17)
+	  $foodbut = GUICtrlCreateButton("Food xy", 18, 190, 93, 17)
 
-	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 205, 73, 17)
+	  $fishingbut = GUICtrlCreateButton("Fishing xy", 18, 230, 50, 17)
+	  $wedkabut = GUICtrlCreateButton("Wedka xy", 67, 230, 53, 17)
+
+	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 190, 73, 17)
+
+	  $fishingon = GUICtrlCreateCheckbox("Fish zasieg", 18, 250, 73, 17)
+	  $fishsqm = GUICtrlCreateInput("1", 95, 250, 20, 20)
 
 	  $Label2 = GUICtrlCreateLabel("Hp", 21, 61, 31, 17)
 
@@ -131,9 +138,10 @@ Func botgui()
 
 
 WinSetOnTop($Bot, "", 1)
-
+$id0 = _Timer_SetTimer($Bot,500,"name")
 While 1
    $nMsg = GUIGetMsg()
+
    Switch $nMsg
 	  Case $GUI_EVENT_CLOSE
 		 Exit
@@ -160,7 +168,7 @@ While 1
 
 	  Case $Afkon
 		 If _IsChecked($Afkon) Then
-			$id3 = _Timer_SetTimer($Bot,1000*60*10,"afk")
+			$id3 = _Timer_SetTimer($Bot,1000*60*5,"afk")
 		 Else
 			_Timer_KillTimer($Bot,$id3)
 		 EndIf
@@ -191,6 +199,20 @@ While 1
 			$id7 = _Timer_SetTimer($Bot,1000*10,"train")
 		 Else
 			_Timer_KillTimer($Bot,$id7)
+		 EndIf
+
+	  Case $Afkon2
+		 If _IsChecked($Afkon2) Then
+			$id8 = _Timer_SetTimer($Bot,1000*60*5,"afk2")
+		 Else
+			_Timer_KillTimer($Bot,$id8)
+		 EndIf
+
+	  Case $fishingon
+		 If _IsChecked($fishingon) Then
+			$id9 = _Timer_SetTimer($Bot,1200,"fishing")
+		 Else
+			_Timer_KillTimer($Bot,$id9)
 		 EndIf
 
 	  Case $hoton
@@ -228,8 +250,15 @@ While 1
 	  Case $trainxy
 		 mousepost()
 
+	  Case $fishingbut
+		 mouseposfish()
+
+	  Case $wedkabut
+		 mouseposwedka()
+
 	EndSwitch
- WEnd
+
+WEnd
 
 EndFunc
 
@@ -237,7 +266,7 @@ EndFunc
 
 Func _IsChecked($idControlID)
     Return BitAND(GUICtrlRead($idControlID), $GUI_CHECKED) = $GUI_CHECKED
- EndFunc
+EndFunc
 
 ;funkcje botowe
 
@@ -281,6 +310,15 @@ Func spear()
 	  ;Sleep(50)
 EndFunc
 
+ ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+func name($1,$2,$3,$4)
+   $namefinal = "0x" & hex($base_adr+$name_static)
+   $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[10]")
+
+   GUICtrlSetData($namelab,$name[1])
+EndFunc
+
 Func eatfood($1,$2,$3,$4)
 	  $mx = MouseGetPos(0)
 	  $my = MouseGetPos(1)
@@ -309,16 +347,37 @@ EndFunc
 
 func afk($1,$2,$3,$4)
 
+   ;WinActivate($hWnd)
+   ;Send("^{UP}")
+   ;Send("^{DOWN}")
+
+   ControlSend($hWnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
+   Sleep(10)
+   ControlSend($hWnd,"","","{CTRLDOWN}{LEFT}{CTRLUP}")
+
+   unstuck()
+
+EndFunc
+
+func afk2($1,$2,$3,$4)
+
    WinActivate($hWnd)
    Send("^{UP}")
    Send("^{DOWN}")
 
-   ;unstuck()
-
 EndFunc
 
-Func _MakeLong($LoWord, $HiWord)
-    Return BitOR($HiWord * 0x10000, BitAND($LoWord, 0xFFFF))
+func fishing($1,$2,$3,$4)
+
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+	  $range = guictrlread($fishsqm)*50
+
+
+	  MouseClick("right",$wedkax, $wedkay,1,1)
+	  MouseClick("left",$fishx+Random($range*-1, $range),$fishy+Random($range*-1, $range),1,1)
+	  MouseMove($mx,$my,1)
+
 EndFunc
 
 func rune($1,$2,$3,$4)
@@ -327,13 +386,13 @@ func rune($1,$2,$3,$4)
    $finalADDR = "0x" & hex($base_adr+$mana_static)
    $mana = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
 
-   $namefinal = "0x" & hex($base_adr+$name_static)
-   $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[10]")
+   $finalADDRh = "0x" & hex($base_adr+$hp_static)
+   $hp = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
 
    ;$handle = WinGetHandle($hWnd, "")
 
    GUICtrlSetData($Manacurr,$mana[1])
-   GUICtrlSetData($namelab,$name[1])
+   GUICtrlSetData($Hpcurr, $hp[1])
 
 	  if $mana[1] >= $manaclient Then
 		 $spellname = guictrlread($RunemakerInput)
@@ -460,6 +519,34 @@ Func mousepossd()
     If _IsPressed("01", $dll) Then
         $sdx = MouseGetPos(0)
 		$sdy = MouseGetPos(1)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func mouseposfish()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $fishx = MouseGetPos(0)
+		$fishy = MouseGetPos(1)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func mouseposwedka()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $wedkax = MouseGetPos(0)
+		$wedkay = MouseGetPos(1)
 	    ExitLoop
         While _IsPressed("01", $dll)
             Sleep(10)
