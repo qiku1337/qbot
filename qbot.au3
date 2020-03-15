@@ -17,21 +17,26 @@
 #include <GuiSlider.au3>
 #include <ComboConstants.au3>
 #include <Process.au3>
-#include <SendMessage.au3>
+#include <mouse.au3>
 
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_icon=qbot.ico
 #RequireAdmin
 ;#NoTrayIcon
 
+HotKeySet("{PAUSE}", "KILL")
 global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal
 global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay
-global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm
+global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm,$mana_global,$hp_global,$cap_global
 
 pop()
+
+Func KILL()
+    Exit 0
+EndFunc
 
 Func botgui()
 
@@ -138,7 +143,10 @@ Func botgui()
 
 
 WinSetOnTop($Bot, "", 1)
-$id0 = _Timer_SetTimer($Bot,500,"name")
+
+$id0 = _Timer_SetTimer($Bot,200,"name")
+$id99 = _Timer_SetTimer($Bot,1000,"nameupdate")
+
 While 1
    $nMsg = GUIGetMsg()
 
@@ -182,7 +190,7 @@ While 1
 
 	  Case $eatfoodcheck
 		 If _IsChecked($eatfoodcheck) Then
-			$id5 = _Timer_SetTimer($Bot,1000*10,"eatfood")
+			$id5 = _Timer_SetTimer($Bot,1000*15,"eatfood")
 		 Else
 			_Timer_KillTimer($Bot,$id5)
 		 EndIf
@@ -316,6 +324,19 @@ func name($1,$2,$3,$4)
    $namefinal = "0x" & hex($base_adr+$name_static)
    $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[10]")
 
+   $finalADDR = "0x" & hex($base_adr+$mana_static)
+   $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
+
+   $finalADDRh = "0x" & hex($base_adr+$hp_static)
+   $hp_global = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
+
+   $finalADDRcap = "0x" & hex($base_adr+$cap_static)
+   $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
+EndFunc
+
+func nameupdate($1,$2,$3,$4)
+   GUICtrlSetData($Manacurr,$mana_global[1])
+   GUICtrlSetData($Hpcurr, $hp_global[1])
    GUICtrlSetData($namelab,$name[1])
 EndFunc
 
@@ -342,21 +363,14 @@ func watch($1,$2,$3,$4)
 		 _Timer_KillTimer($Bot,$id4)
 		 unstuck()
 	  EndIf
-	  ConsoleWrite($battleval[1])
 EndFunc
 
 func afk($1,$2,$3,$4)
-
-   ;WinActivate($hWnd)
-   ;Send("^{UP}")
-   ;Send("^{DOWN}")
-
-   ControlSend($hWnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
+   ControlSend($hWnd,"","","{CTRLdown}{UP}{CTRLUP}")
    Sleep(10)
-   ControlSend($hWnd,"","","{CTRLDOWN}{LEFT}{CTRLUP}")
+   ControlSend($hWnd,"","","{CTRLdown}{down}{CTRLUP}")
 
    unstuck()
-
 EndFunc
 
 func afk2($1,$2,$3,$4)
@@ -372,56 +386,28 @@ func fishing($1,$2,$3,$4)
 	  $mx = MouseGetPos(0)
 	  $my = MouseGetPos(1)
 	  $range = guictrlread($fishsqm)*50
-
-
-	  MouseClick("right",$wedkax, $wedkay,1,1)
-	  MouseClick("left",$fishx+Random($range*-1, $range),$fishy+Random($range*-1, $range),1,1)
-	  MouseMove($mx,$my,1)
-
+	  If $cap_global[1] >= 6 Then
+		 MouseClick("right",$wedkax, $wedkay,1,1)
+		 MouseClick("left",$fishx+Random($range*-1, $range),$fishy+Random($range*-1, $range),1,1)
+		 MouseMove($mx,$my,1)
+	  EndIf
 EndFunc
 
 func rune($1,$2,$3,$4)
    $manaclient = guictrlread($ManaInput)
-
-   $finalADDR = "0x" & hex($base_adr+$mana_static)
-   $mana = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
-
-   $finalADDRh = "0x" & hex($base_adr+$hp_static)
-   $hp = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
-
-   ;$handle = WinGetHandle($hWnd, "")
-
-   GUICtrlSetData($Manacurr,$mana[1])
-   GUICtrlSetData($Hpcurr, $hp[1])
-
-	  if $mana[1] >= $manaclient Then
+	  if $mana_global[1] >= $manaclient Then
 		 $spellname = guictrlread($RunemakerInput)
 		 controlsend($hWnd,"","",$spellname)
 	  EndIf
-
 EndFunc
 
 func healer($1,$2,$3,$4)
    $hpclient = guictrlread($HpInput)
    $manaclient = guictrlread($Manaheal)
-
-   $finalADDR = "0x" & hex($base_adr+$hp_static)
-   $hp = _MemoryPointerRead($finalADDR, $memory_g, $hp_offset,"double")
-
-   $finalADDRm = "0x" & hex($base_adr+$mana_static)
-   $mana = _MemoryPointerRead($finalADDRm, $memory_g, $mana_offset,"double")
-
-   ;$handle = WinGetHandle($hWnd, "")
-
-   GUICtrlSetData($Hpcurr, $hp[1])
-   GUICtrlSetData($Manacurr,$mana[1])
-
-	  if $hp[1] <= $hpclient And $mana[1] >= $manaclient Then
+	  if $hp_global[1] <= $hpclient And $mana_global[1] >= $manaclient Then
 		 $spellname = guictrlread($HealHot)
 		 controlsend($hWnd,"","",$spellname)
-		 ConsoleWrite($mana)
 	  EndIf
-
 EndFunc
 
 func train($1,$2,$3,$4)

@@ -16,3 +16,6 @@ global $name_offset[2] = [Null, 252]
 
 global $ifattack_static = 0x000346C4
 global $ifattack_offset[2] = [Null, 0]
+
+global $cap_static = 0x0048B090
+global $cap_offset[2] = [Null, 936]
