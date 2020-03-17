@@ -28,9 +28,10 @@ HotKeySet("{PAUSE}", "KILL")
 global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
-global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal
-global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay
-global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm,$mana_global,$hp_global,$cap_global
+global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal,$Capcurr,$Battlecurr
+global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay,$handx,$handy
+global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm
+global $mana_global,$hp_global,$cap_global,$battleval_global
 
 pop()
 
@@ -41,68 +42,47 @@ EndFunc
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot V3.3", 213, 289, 0, 60)
+	  $Bot = GUICreate("Qbot V3.5", 213, 289, 0, 60)
 	  $Ramka = GUICtrlCreateTab(2, 2, 210, 282)
 	  GUICtrlCreateTabItem("Runes")
 	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
 
-      $Runeon = GUICtrlCreateCheckbox("Runemaker on", 124, 161, 73, 25)
+	  $NameLabel = GUICtrlCreateLabel("Name", 20, 27, 56, 17)
+	  $namelab = GUICtrlCreateLabel("???", 60, 27, 58, 17)
+	  $hplabel = GUICtrlCreateLabel("Hp", 21, 45, 31, 17)
+	  $Hpcurr = GUICtrlCreateLabel("0", 58, 45, 36, 17)
+	  $manalabel = GUICtrlCreateLabel("Mana", 20, 61, 31, 17)
+	  $Manacurr = GUICtrlCreateLabel("0", 58, 61, 28, 17)
+	  $caplabel = GUICtrlCreateLabel("Cap", 91, 45, 31, 17)
+	  $Capcurr = GUICtrlCreateLabel("0", 118, 45, 36, 17)
+	  $battlelabel = GUICtrlCreateLabel("Battle players", 151, 45, 33, 39)
+	  $Battlecurr = GUICtrlCreateLabel("0", 180, 45, 36, 17)
+
+	  $Label3 = GUICtrlCreateLabel("Healbot", 91, 69, 68, 17)
+	  $HpInput = GUICtrlCreateInput("300", 20, 82, 32, 22)
+	  $Manaheal = GUICtrlCreateInput("25", 20, 102, 32, 22)
+	  $HealHot = GUICtrlCreateCombo("", 60, 90, 50, 25)
+	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
+	  $Healon = GUICtrlCreateCheckbox("Healer On", 124, 87, 73, 25)
+
 
 	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 127, 68, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label1 = GUICtrlCreateLabel("Mana", 20, 45, 31, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
+	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 44, 141, 108, 17)
 	  $ManaInput = GUICtrlCreateInput("100", 20, 164, 32, 22)
-
 	  $RunemakerInput = GUICtrlCreateCombo("", 60, 164, 50, 25)
 	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
+      $Runeon = GUICtrlCreateCheckbox("Runemaker on", 124, 161, 73, 25)
 
-	  $NameLabel = GUICtrlCreateLabel("Name", 20, 27, 36, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $namelab = GUICtrlCreateLabel("???", 60, 27, 58, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 44, 141, 108, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Manacurr = GUICtrlCreateLabel("0", 58, 45, 28, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
 	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 124, 229, 60, 17)
 	  $Afkon2 = GUICtrlCreateCheckbox("Anti Afk2", 124, 249, 60, 17)
 
-	  $watchon = GUICtrlCreateCheckbox("Battle logout", 20, 210, 89, 17)
-
+	  $watchon = GUICtrlCreateCheckbox("Player on battle logout", 20, 210, 159, 17)
 	  $foodbut = GUICtrlCreateButton("Food xy", 18, 190, 93, 17)
-
 	  $fishingbut = GUICtrlCreateButton("Fishing xy", 18, 230, 50, 17)
 	  $wedkabut = GUICtrlCreateButton("Wedka xy", 67, 230, 53, 17)
-
 	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 190, 73, 17)
-
 	  $fishingon = GUICtrlCreateCheckbox("Fish zasieg", 18, 250, 73, 17)
 	  $fishsqm = GUICtrlCreateInput("1", 95, 250, 20, 20)
-
-	  $Label2 = GUICtrlCreateLabel("Hp", 21, 61, 31, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Hpcurr = GUICtrlCreateLabel("0", 58, 61, 36, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $Label3 = GUICtrlCreateLabel("Healbot", 91, 69, 68, 17)
-
-	  GUICtrlSetBkColor(-1, 0xFFFFFF)
-	  $HpInput = GUICtrlCreateInput("300", 20, 82, 32, 22)
-
-	  $Manaheal = GUICtrlCreateInput("25", 20, 102, 32, 22)
-
-	  $HealHot = GUICtrlCreateCombo("", 60, 90, 50, 25)
-	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
-
-	  $Healon = GUICtrlCreateCheckbox("Healer On", 124, 87, 73, 25)
 
 	  GUICtrlCreateTabItem("Light")
 	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 28, 29, 52, 17)
@@ -111,31 +91,24 @@ Func botgui()
 
 	  GUICtrlCreateTabItem("Aim")
 	  $butinfo3 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
-
 	  $uhxy = GUICtrlCreateButton("SHOOT1_XY", 12, 52, 70, 25)
-
 	  $manasxy = GUICtrlCreateButton("SHOOT2_XY", 12, 82, 70, 25)
-
 	  $spearbut = GUICtrlCreateButton("DRAG1_XY", 12, 142, 70, 25)
-
 	  $sdxy = GUICtrlCreateButton("SHOOT3_XY", 12, 112, 70, 25)
-
 	  $hoton = GUICtrlCreateCheckbox("Hotkeys on", 60, 196, 81, 17)
-
 	  $Label4 = GUICtrlCreateLabel("Key", 132, 29, 23, 18)
-
 	  $hotkey_1 = GUICtrlCreateInput("insert", 122, 53, 49, 22)
-
 	  $hotkey_2 = GUICtrlCreateInput("pgdn", 122, 82, 49, 22)
-
 	  $hotkey_3 = GUICtrlCreateInput("", 122, 112, 49, 22)
-
 	  $hotkey_4 = GUICtrlCreateInput("end", 122, 143, 49, 22)
 
 	  $TabSheet1 = GUICtrlCreateTabItem("Train")
 	  $trainxy = GUICtrlCreateButton("Monster xy", 4, 34, 73, 25)
-
-	  $trainon = GUICtrlCreateCheckbox("Training on", 84, 36, 81, 17)
+	  $trainon = GUICtrlCreateCheckbox("Auto target on", 84, 36, 85, 17)
+	  $handxy = GUICtrlCreateButton("Hand xy", 4, 65, 73, 25)
+	  $labeltrain = GUICtrlCreateLabel("Podnos spear co", 4, 90, 90, 18)
+	  $podnospearcheck = GUICtrlCreateCheckbox("sec", 120, 90, 90, 18)
+	  $spearpickdel = GUICtrlCreateInput("10", 90, 87, 20, 20)
 
 	  GUICtrlCreateTabItem("")
 	  GUISetState(@SW_SHOW)
@@ -144,7 +117,7 @@ Func botgui()
 
 WinSetOnTop($Bot, "", 1)
 
-$id0 = _Timer_SetTimer($Bot,200,"name")
+$id0 = _Timer_SetTimer($Bot,100,"name")
 $id99 = _Timer_SetTimer($Bot,1000,"nameupdate")
 
 While 1
@@ -223,6 +196,13 @@ While 1
 			_Timer_KillTimer($Bot,$id9)
 		 EndIf
 
+	  Case $podnospearcheck
+		 If _IsChecked($podnospearcheck) Then
+			$id10 = _Timer_SetTimer($Bot,guictrlread($spearpickdel)*1000,"autospear")
+		 Else
+			_Timer_KillTimer($Bot,$id10)
+		 EndIf
+
 	  Case $hoton
 		 If _IsChecked($hoton) Then
 			HotKeySet("{" & guictrlread($hotkey_1) & "}", "aim")
@@ -263,6 +243,9 @@ While 1
 
 	  Case $wedkabut
 		 mouseposwedka()
+
+	  Case $handxy
+		 mouseposhand()
 
 	EndSwitch
 
@@ -322,7 +305,7 @@ EndFunc
 
 func name($1,$2,$3,$4)
    $namefinal = "0x" & hex($base_adr+$name_static)
-   $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[10]")
+   $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[20]")
 
    $finalADDR = "0x" & hex($base_adr+$mana_static)
    $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
@@ -332,12 +315,33 @@ func name($1,$2,$3,$4)
 
    $finalADDRcap = "0x" & hex($base_adr+$cap_static)
    $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
+
+   $finalADDRbat = "0x" & hex($base_adr+$battle_static)
+   $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
 EndFunc
 
 func nameupdate($1,$2,$3,$4)
    GUICtrlSetData($Manacurr,$mana_global[1])
    GUICtrlSetData($Hpcurr, $hp_global[1])
    GUICtrlSetData($namelab,$name[1])
+   GUICtrlSetData($Capcurr,$cap_global[1])
+   $bval = ($battleval_global[1]-420)/22
+   GUICtrlSetData($Battlecurr,$bval)
+   ;ConsoleWrite($battleval_global[1])
+   ;ConsoleWrite(@LF)
+EndFunc
+
+Func autospear($1,$2,$3,$4)
+	  $mx = MouseGetPos(0)
+	  $my = MouseGetPos(1)
+
+	  MouseMove($trainx,$trainy,1)
+	  MouseDown("left")
+	  MouseMove($handx,$handy,1)
+	  MouseUp("left")
+      Send("{enter}")
+	  MouseMove($mx,$my,1)
+
 EndFunc
 
 Func eatfood($1,$2,$3,$4)
@@ -354,9 +358,7 @@ func light($1,$2,$3,$4)
 EndFunc
 
 func watch($1,$2,$3,$4)
-      $finalADDR = "0x" & hex($base_adr+$battle_static)
-	  $battleval = _MemoryPointerRead($finalADDR, $memory_g, $battle_offset)
-	  if ($battleval[1]>420) Then
+	  if ($battleval_global[1]>420) Then
 		 controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
 		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
 		 GUICtrlSetState($watchon,$GUI_UNCHECKED)
@@ -387,6 +389,7 @@ func fishing($1,$2,$3,$4)
 	  $my = MouseGetPos(1)
 	  $range = guictrlread($fishsqm)*50
 	  If $cap_global[1] >= 6 Then
+		 WinActivate($hWnd)
 		 MouseClick("right",$wedkax, $wedkay,1,1)
 		 MouseClick("left",$fishx+Random($range*-1, $range),$fishy+Random($range*-1, $range),1,1)
 		 MouseMove($mx,$my,1)
@@ -533,6 +536,20 @@ Func mouseposwedka()
     If _IsPressed("01", $dll) Then
         $wedkax = MouseGetPos(0)
 		$wedkay = MouseGetPos(1)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
+Func mouseposhand()
+   While 1
+    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
+    If _IsPressed("01", $dll) Then
+        $handx = MouseGetPos(0)
+		$handy = MouseGetPos(1)
 	    ExitLoop
         While _IsPressed("01", $dll)
             Sleep(10)
