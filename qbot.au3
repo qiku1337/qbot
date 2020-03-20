@@ -14,10 +14,10 @@
 #include <nomad.au3>
 #include <pop.au3>
 #include <help.au3>
-#include <GuiSlider.au3>
 #include <ComboConstants.au3>
 #include <Process.au3>
 #include <mouse.au3>
+
 
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_icon=qbot.ico
@@ -29,9 +29,9 @@ global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal,$Capcurr,$Battlecurr
-global $mx,$my,$playerx,$playery,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay,$handx,$handy
+global $mx,$my,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay,$handx,$handy
 global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm
-global $mana_global,$hp_global,$cap_global,$battleval_global
+global $reccnt = 0,$reconnectmin
 
 pop()
 
@@ -42,21 +42,21 @@ EndFunc
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot V3.5", 213, 289, 0, 60)
-	  $Ramka = GUICtrlCreateTab(2, 2, 210, 282)
+	  $Bot = GUICreate("Qbot V4.1", 213, 320, 0, 60)
+	  $Ramka = GUICtrlCreateTab(2, 2, 210, 310)
 	  GUICtrlCreateTabItem("Runes")
 	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
 
 	  $NameLabel = GUICtrlCreateLabel("Name", 20, 27, 56, 17)
-	  $namelab = GUICtrlCreateLabel("???", 60, 27, 58, 17)
+	  $namelab = GUICtrlCreateLabel("???", 60, 27, 188, 17)
 	  $hplabel = GUICtrlCreateLabel("Hp", 21, 45, 31, 17)
 	  $Hpcurr = GUICtrlCreateLabel("0", 58, 45, 36, 17)
 	  $manalabel = GUICtrlCreateLabel("Mana", 20, 61, 31, 17)
 	  $Manacurr = GUICtrlCreateLabel("0", 58, 61, 28, 17)
 	  $caplabel = GUICtrlCreateLabel("Cap", 91, 45, 31, 17)
 	  $Capcurr = GUICtrlCreateLabel("0", 118, 45, 36, 17)
-	  $battlelabel = GUICtrlCreateLabel("Battle players", 151, 45, 33, 39)
-	  $Battlecurr = GUICtrlCreateLabel("0", 180, 45, 36, 17)
+	  $battlelabel = GUICtrlCreateLabel("Screen player +2sqm", 151, 45, 33, 39)
+	  $Battlecurr = GUICtrlCreateLabel("0", 188, 45, 36, 17)
 
 	  $Label3 = GUICtrlCreateLabel("Healbot", 91, 69, 68, 17)
 	  $HpInput = GUICtrlCreateInput("300", 20, 82, 32, 22)
@@ -77,12 +77,14 @@ Func botgui()
 	  $Afkon2 = GUICtrlCreateCheckbox("Anti Afk2", 124, 249, 60, 17)
 
 	  $watchon = GUICtrlCreateCheckbox("Player on battle logout", 20, 210, 159, 17)
+	  $reconnecton = GUICtrlCreateCheckbox("Reconnect", 20, 230, 70, 17)
+	  $reconnectmin = GUICtrlCreateInput("5", 95, 230, 20, 20)
 	  $foodbut = GUICtrlCreateButton("Food xy", 18, 190, 93, 17)
-	  $fishingbut = GUICtrlCreateButton("Fishing xy", 18, 230, 50, 17)
-	  $wedkabut = GUICtrlCreateButton("Wedka xy", 67, 230, 53, 17)
+	  $fishingbut = GUICtrlCreateButton("Fishing xy", 18, 250, 50, 17)
+	  $wedkabut = GUICtrlCreateButton("Wedka xy", 67, 250, 53, 17)
 	  $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 190, 73, 17)
-	  $fishingon = GUICtrlCreateCheckbox("Fish zasieg", 18, 250, 73, 17)
-	  $fishsqm = GUICtrlCreateInput("1", 95, 250, 20, 20)
+	  $fishingon = GUICtrlCreateCheckbox("Fish zasieg", 18, 270, 73, 17)
+	  $fishsqm = GUICtrlCreateInput("1", 95, 270, 20, 20)
 
 	  GUICtrlCreateTabItem("Light")
 	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 28, 29, 52, 17)
@@ -177,7 +179,7 @@ While 1
 
 	  Case $trainon
 		 If _IsChecked($trainon) Then
-			$id7 = _Timer_SetTimer($Bot,1000*10,"train")
+			$id7 = _Timer_SetTimer($Bot,2000,"train")
 		 Else
 			_Timer_KillTimer($Bot,$id7)
 		 EndIf
@@ -201,6 +203,13 @@ While 1
 			$id10 = _Timer_SetTimer($Bot,guictrlread($spearpickdel)*1000,"autospear")
 		 Else
 			_Timer_KillTimer($Bot,$id10)
+		 EndIf
+
+	  Case $reconnecton
+		 If _IsChecked($reconnecton) Then
+			$id11 = _Timer_SetTimer($Bot,1000,"reconnect")
+		 Else
+			_Timer_KillTimer($Bot,$id11)
 		 EndIf
 
 	  Case $hoton
@@ -305,51 +314,44 @@ EndFunc
 
 func name($1,$2,$3,$4)
    $namefinal = "0x" & hex($base_adr+$name_static)
-   $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[20]")
+   global $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[20]")
 
    $finalADDR = "0x" & hex($base_adr+$mana_static)
-   $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
+   global $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
 
    $finalADDRh = "0x" & hex($base_adr+$hp_static)
-   $hp_global = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
+   global $hp_global = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
 
    $finalADDRcap = "0x" & hex($base_adr+$cap_static)
-   $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
+   global $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
 
    $finalADDRbat = "0x" & hex($base_adr+$battle_static)
-   $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
+   global $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
+
+   $finalADDRlogin = "0x" & hex($base_adr+$iflogin_static)
+   global $islogin_global = _MemoryPointerRead($finalADDRlogin, $memory_g, $iflogin_offset)
 EndFunc
 
 func nameupdate($1,$2,$3,$4)
    GUICtrlSetData($Manacurr,$mana_global[1])
    GUICtrlSetData($Hpcurr, $hp_global[1])
-   GUICtrlSetData($namelab,$name[1])
+   If $islogin_global[1] == 0 Then
+	  GUICtrlSetData($namelab,"Disconnected")
+   Else
+	  GUICtrlSetData($namelab,$name[1])
+   EndIf
    GUICtrlSetData($Capcurr,$cap_global[1])
-   $bval = ($battleval_global[1]-420)/22
+   $bval = $battleval_global[1]   ;($battleval_global[1]-420)/22
    GUICtrlSetData($Battlecurr,$bval)
-   ;ConsoleWrite($battleval_global[1])
-   ;ConsoleWrite(@LF)
 EndFunc
 
 Func autospear($1,$2,$3,$4)
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-
-	  MouseMove($trainx,$trainy,1)
-	  MouseDown("left")
-	  MouseMove($handx,$handy,1)
-	  MouseUp("left")
-      Send("{enter}")
-	  MouseMove($mx,$my,1)
-
+	  _MouseDragPlus($hwnd,"left",$trainx,$trainy,$handx,$handy)
+	  controlsend($hWnd,"","","{enter}")
 EndFunc
 
 Func eatfood($1,$2,$3,$4)
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-	  WinActivate($hWnd)
-	  MouseClick("right",$foodx, $foody,1,1)
-	  MouseMove($mx,$my,1)
+	  _MouseClickPlus($hwnd,"right",$foodx,$foody,1)
 EndFunc
 
 func light($1,$2,$3,$4)
@@ -358,12 +360,25 @@ func light($1,$2,$3,$4)
 EndFunc
 
 func watch($1,$2,$3,$4)
-	  if ($battleval_global[1]>420) Then
+	  if ($battleval_global[1]>1) Then
 		 controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
 		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
-		 GUICtrlSetState($watchon,$GUI_UNCHECKED)
-		 _Timer_KillTimer($Bot,$id4)
+		 ;GUICtrlSetState($watchon,$GUI_UNCHECKED)
+		 ;_Timer_KillTimer($Bot,$id4)
 		 unstuck()
+	  EndIf
+   EndFunc
+
+func reconnect($1,$2,$3,$4)
+	  ;0 albo 257
+	  ConsoleWrite($reccnt&@LF)
+	  If $islogin_global[1] == 0 Then
+		 $reccnt = $reccnt+1
+		 If $reccnt >= guictrlread($reconnectmin)*60 Then
+			ControlSend($hWnd,"","","{enter}")
+		 EndIf
+	  Else
+		 $reccnt = 0
 	  EndIf
 EndFunc
 
@@ -384,15 +399,11 @@ func afk2($1,$2,$3,$4)
 EndFunc
 
 func fishing($1,$2,$3,$4)
-
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
 	  $range = guictrlread($fishsqm)*50
 	  If $cap_global[1] >= 6 Then
-		 WinActivate($hWnd)
-		 MouseClick("right",$wedkax, $wedkay,1,1)
-		 MouseClick("left",$fishx+Random($range*-1, $range),$fishy+Random($range*-1, $range),1,1)
-		 MouseMove($mx,$my,1)
+		 _MouseClickPlus($hwnd,"right",$wedkax,$wedkay,1)
+		 Sleep(5)
+		 _MouseClickPlus($hwnd,"left",Round($fishx+Random($range*-1, $range)),Round($fishy+Random($range*-1, $range)),1)
 	  EndIf
 EndFunc
 
@@ -418,13 +429,7 @@ func train($1,$2,$3,$4)
    $finalADDR = "0x" & hex($base_adr+$ifattack_static)
    $ifattack = _MemoryPointerRead($finalADDR, $memory_g, $ifattack_offset)
    if $ifattack[1] == 0 Then
-	  $windowTitle = WinGetTitle("[ACTIVE]")
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-	  WinActivate($hWnd)
-	  MouseClick("right",$trainx, $trainy,1,1)
-	  MouseMove($mx,$my,1)
-	  WinActivate($windowTitle)
+	  _MouseClickPlus($hwnd,"right",$trainx,$trainy,1)
    EndIf
 EndFunc
 

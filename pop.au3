@@ -1,4 +1,4 @@
-global $NameExeIn, $List1, $List2, $hWnd, $foodx, $foody
+global $NameExeIn, $List1, $List2, $hWnd,$hWin
 Func pop()
 
 #Region ### START Koda GUI section ### Form=
