@@ -28,7 +28,8 @@
 HotKeySet("{PAUSE}", "KILL")
 global $dll = DllOpen("user32.dll")
 
-;$l = _Timer_Init()
+$RunningTime = TimerInit()
+
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal,$Capcurr,$Battlecurr
 global $handx,$handy
 global $id4,$Bot,$namelab,$watchon,$color,$fishsqm
@@ -36,6 +37,8 @@ global $id4,$Bot,$namelab,$watchon,$color,$fishsqm
 global $aim1xy = ["0","0"],$aim2xy = ["0","0"],$aim3xy = ["0","0"],$aim4xy = ["0","0"],$trainxy = ["0","0"],$foodxy = ["0","0"]
 global $spearxy = ["0","0"],$fishxy = ["0","0"], $rodxy = ["0","0"], $handxy = ["0","0"]
 global $reccnt = 0,$reconnectmin
+
+global $demo = 1
 
 pop()
 
@@ -338,6 +341,16 @@ func name($1,$2,$3,$4)
 
    $finalADDRlogin = "0x" & hex($base_adr+$iflogin_static)
    global $islogin_global = _MemoryPointerRead($finalADDRlogin, $memory_g, $iflogin_offset)
+
+
+   If $demo == 1 Then
+	  local $time = Round(TimerDiff($RunningTime)/1000)
+	  local $left = 120
+	  WinSetTitle($Bot,"",$left-$time & " DEMO exit")
+	  If TimerDiff($RunningTime)/1000 > $left Then
+		 KILL()
+	  EndIf
+   EndIf
 EndFunc
 
 func nameupdate($1,$2,$3,$4)
