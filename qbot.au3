@@ -17,7 +17,8 @@
 #include <ComboConstants.au3>
 #include <Process.au3>
 #include <mouse.au3>
-
+#include <keyboard.au3>
+#include <WinAPI.au3>
 
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_icon=qbot.ico
@@ -29,8 +30,11 @@ global $dll = DllOpen("user32.dll")
 
 ;$l = _Timer_Init()
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal,$Capcurr,$Battlecurr
-global $mx,$my,$aim1x,$aim1y,$foodx,$foody,$spearx,$speary,$manasx,$manasy,$trainx,$trainy,$sdx,$sdy,$fishx,$fishy,$wedkax,$wedkay,$handx,$handy
-global $id4,$Bot,$namelab,$watchon,$Slider1,$color,$fishsqm
+global $handx,$handy
+global $id4,$Bot,$namelab,$watchon,$color,$fishsqm
+
+global $aim1xy = ["0","0"],$aim2xy = ["0","0"],$aim3xy = ["0","0"],$aim4xy = ["0","0"],$trainxy = ["0","0"],$foodxy = ["0","0"]
+global $spearxy = ["0","0"],$fishxy = ["0","0"], $rodxy = ["0","0"], $handxy = ["0","0"]
 global $reccnt = 0,$reconnectmin
 
 pop()
@@ -93,10 +97,11 @@ Func botgui()
 
 	  GUICtrlCreateTabItem("Aim")
 	  $butinfo3 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
-	  $uhxy = GUICtrlCreateButton("SHOOT1_XY", 12, 52, 70, 25)
-	  $manasxy = GUICtrlCreateButton("SHOOT2_XY", 12, 82, 70, 25)
-	  $spearbut = GUICtrlCreateButton("DRAG1_XY", 12, 142, 70, 25)
-	  $sdxy = GUICtrlCreateButton("SHOOT3_XY", 12, 112, 70, 25)
+	  $hotkey1but = GUICtrlCreateButton("SHOOT1_XY", 12, 52, 70, 25)
+	  $hotkey2but = GUICtrlCreateButton("SHOOT2_XY", 12, 82, 70, 25)
+      $hotkey3but = GUICtrlCreateButton("SHOOT3_XY", 12, 112, 70, 25)
+	  $hotkey4but = GUICtrlCreateButton("DRAG1_XY", 12, 142, 70, 25)
+
 	  $hoton = GUICtrlCreateCheckbox("Hotkeys on", 60, 196, 81, 17)
 	  $Label4 = GUICtrlCreateLabel("Key", 132, 29, 23, 18)
 	  $hotkey_1 = GUICtrlCreateInput("insert", 122, 53, 49, 22)
@@ -105,9 +110,9 @@ Func botgui()
 	  $hotkey_4 = GUICtrlCreateInput("end", 122, 143, 49, 22)
 
 	  $TabSheet1 = GUICtrlCreateTabItem("Train")
-	  $trainxy = GUICtrlCreateButton("Monster xy", 4, 34, 73, 25)
+	  $trainxybut = GUICtrlCreateButton("Monster xy", 4, 34, 73, 25)
 	  $trainon = GUICtrlCreateCheckbox("Auto target on", 84, 36, 85, 17)
-	  $handxy = GUICtrlCreateButton("Hand xy", 4, 65, 73, 25)
+	  $handxybut = GUICtrlCreateButton("Hand xy", 4, 65, 73, 25)
 	  $labeltrain = GUICtrlCreateLabel("Podnos spear co", 4, 90, 90, 18)
 	  $podnospearcheck = GUICtrlCreateCheckbox("sec", 120, 90, 90, 18)
 	  $spearpickdel = GUICtrlCreateInput("10", 90, 87, 20, 20)
@@ -165,7 +170,7 @@ While 1
 
 	  Case $eatfoodcheck
 		 If _IsChecked($eatfoodcheck) Then
-			$id5 = _Timer_SetTimer($Bot,1000*15,"eatfood")
+			$id5 = _Timer_SetTimer($Bot,5000,"eatfood")
 		 Else
 			_Timer_KillTimer($Bot,$id5)
 		 EndIf
@@ -214,13 +219,13 @@ While 1
 
 	  Case $hoton
 		 If _IsChecked($hoton) Then
-			HotKeySet("{" & guictrlread($hotkey_1) & "}", "aim")
+			HotKeySet("{" & guictrlread($hotkey_1) & "}", "_aim_hotkey_1")
 			   $hotkey1temp = "{" & guictrlread($hotkey_1) & "}"
-			HotKeySet("{" & guictrlread($hotkey_2) & "}", "manas")
+			HotKeySet("{" & guictrlread($hotkey_2) & "}", "_aim_hotkey_2")
 			   $hotkey2temp = "{" & guictrlread($hotkey_2) & "}"
-			HotKeySet("{" & guictrlread($hotkey_3) & "}", "esde")
+			HotKeySet("{" & guictrlread($hotkey_3) & "}", "_aim_hotkey_3")
 			   $hotkey3temp = "{" & guictrlread($hotkey_3) & "}"
-			HotKeySet("{" & guictrlread($hotkey_4) & "}", "spear")
+			HotKeySet("{" & guictrlread($hotkey_4) & "}", "_drag_hotkey_1")
 			   $hotkey4temp = "{" & guictrlread($hotkey_4) & "}"
 		 Else
 			HotKeySet($hotkey1temp)
@@ -229,32 +234,32 @@ While 1
 			HotKeySet($hotkey4temp)
 		 EndIf
 
-	  Case $uhxy
-		 mouseposa()
+	  Case $hotkey1but
+		 $aim1xy = _mousepos()
 
-	  Case $manasxy
-		 mouseposm()
+	  Case $hotkey2but
+		 $aim2xy = _mousepos()
 
-	  Case $sdxy
-		 mousepossd()
+	  Case $hotkey3but
+		 $aim3xy = _mousepos()
+
+	  Case $hotkey4but
+		 $aim4xy = _mousepos()
 
 	  Case $foodbut
-		 mouseposf()
+		 $foodxy = _mousepos()
 
-	  Case $spearbut
-		 mouseposs()
-
-	  Case $trainxy
-		 mousepost()
+	  Case $trainxybut
+		 $trainxy = _mousepos()
 
 	  Case $fishingbut
-		 mouseposfish()
+		 $fishxy = _mousepos()
 
 	  Case $wedkabut
-		 mouseposwedka()
+		 $rodxy = _mousepos()
 
-	  Case $handxy
-		 mouseposhand()
+	  Case $handxybut
+		 $handxy = _mousepos()
 
 	EndSwitch
 
@@ -270,44 +275,47 @@ EndFunc
 
 ;funkcje botowe
 
-Func aim()
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-
-	  MouseClick("right",$aim1x, $aim1y,1,1)
-	  MouseClick("left",$mx,$my,1,1)
-	  Sleep(20)
-	  ;MouseMove($mx,$my,1)
+Func _aim_hotkey_1()
+	  local $mxy = MouseGetPos()
+	  If $aim1xy[0] == 0 Then
+		 error99()
+	  Else
+		 MouseClick("right",$aim1xy[0], $aim1xy[1],1,1)
+		 MouseClick("left",$mxy[0],$mxy[1],1,1)
+	  EndIf
 EndFunc
 
-Func manas()
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-
-	  MouseClick("right",$manasx, $manasy,1,1)
-	  MouseClick("left",$mx,$my,1,1)
-	  ;Sleep(20)
+Func _aim_hotkey_2()
+	  local $mxy = MouseGetPos()
+	  If $aim2xy[0] == 0 Then
+		 error99()
+	  Else
+		 MouseClick("right",$aim2xy[0], $aim2xy[1],1,1)
+		 MouseClick("left",$mxy[0],$mxy[1],1,1)
+	  EndIf
 EndFunc
 
-Func esde()
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-
-	  MouseClick("right",$sdx, $sdy,1,1)
-	  MouseClick("left",$mx,$my,1,1)
-	  ;Sleep(20)
+Func _aim_hotkey_3()
+	  local $mxy = MouseGetPos()
+	  If $aim3xy[0] == 0 Then
+		 error99()
+	  Else
+		 MouseClick("right",$aim3xy[0], $aim3xy[1],1,1)
+		 MouseClick("left",$mxy[0],$mxy[1],1,1)
+	  EndIf
 EndFunc
 
-Func spear()
-	  $mx = MouseGetPos(0)
-	  $my = MouseGetPos(1)
-
-	  MouseDown("left")
-	  MouseMove($spearx,$speary,1)
-	  MouseUp("left")
-      Send("{enter}")
-	  MouseMove($mx,$my,1)
-	  ;Sleep(50)
+Func _drag_hotkey_1()
+	  local $mxy = MouseGetPos()
+	  	  If $aim4xy[0] == 0 Then
+		  error99()
+	  Else
+		 MouseDown("left")
+		 MouseMove($aim4xy[0], $aim4xy[1],1)
+		 MouseUp("left")
+		 Send("{enter}")
+		 MouseMove($mxy[0],$mxy[1],1)
+	  EndIf
 EndFunc
 
  ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -346,12 +354,12 @@ func nameupdate($1,$2,$3,$4)
 EndFunc
 
 Func autospear($1,$2,$3,$4)
-	  _MouseDragPlus($hwnd,"left",$trainx,$trainy,$handx,$handy)
-	  controlsend($hWnd,"","","{enter}")
+   _MouseDragPlus($hWnd,"left",$trainxy[0],$trainxy[1],$handxy[0],$handxy[1])
+   controlsend($hWnd,"","","{enter}")
 EndFunc
 
 Func eatfood($1,$2,$3,$4)
-	  _MouseClickPlus($hwnd,"right",$foodx,$foody,1)
+   _MouseClickPlus($hWnd,"right",$foodxy[0],$foodxy[1],1)
 EndFunc
 
 func light($1,$2,$3,$4)
@@ -360,32 +368,37 @@ func light($1,$2,$3,$4)
 EndFunc
 
 func watch($1,$2,$3,$4)
-	  if ($battleval_global[1]>1) Then
-		 controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
-		 SoundPlay(@WindowsDir & "\media\tada.wav", 1)
-		 ;GUICtrlSetState($watchon,$GUI_UNCHECKED)
-		 ;_Timer_KillTimer($Bot,$id4)
-		 unstuck()
-	  EndIf
-   EndFunc
+   if ($battleval_global[1]>=1) Then
+	  controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
+	  SoundPlay(@WindowsDir & "\media\tada.wav", 1)
+	  ;GUICtrlSetState($watchon,$GUI_UNCHECKED)
+	  ;_Timer_KillTimer($Bot,$id4)
+	  unstuck()
+   EndIf
+EndFunc
 
 func reconnect($1,$2,$3,$4)
-	  ;0 albo 257
-	  ConsoleWrite($reccnt&@LF)
-	  If $islogin_global[1] == 0 Then
-		 $reccnt = $reccnt+1
-		 If $reccnt >= guictrlread($reconnectmin)*60 Then
-			ControlSend($hWnd,"","","{enter}")
-		 EndIf
-	  Else
-		 $reccnt = 0
+   ;0 albo 257
+   ConsoleWrite($reccnt&@LF)
+   If $islogin_global[1] == 0 Then
+	  $reccnt = $reccnt+1
+	  If $reccnt >= guictrlread($reconnectmin)*60 Then
+	  ControlSend($hWnd,"","","{enter}")
 	  EndIf
+   Else
+	  $reccnt = 0
+   EndIf
 EndFunc
 
 func afk($1,$2,$3,$4)
-   ControlSend($hWnd,"","","{CTRLdown}{UP}{CTRLUP}")
-   Sleep(10)
-   ControlSend($hWnd,"","","{CTRLdown}{down}{CTRLUP}")
+
+   ;$ret = DllCall("user32.dll", "int", "MapVirtualKey", "int", 0x11, "int", 0)
+   ;ConsoleWrite($ret)
+   ;DllCall("user32.dll", "int", "PostMessage", "hwnd", $hWnd, "int", $WM_KEYDOWN, "int", 0x35, "long", _MakeLong(1, 0x35))
+   ;Sleep(1)
+   ;DllCall("user32.dll", "int", "PostMessage", "hwnd", $hWnd, "int", $WM_KEYUP, "int", 0x11, "long", _MakeLong(1, 0x35) + 0xC0000000)
+   ControlSend($hwnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
+   ControlSend($hwnd,"","","{CTRLDOWN}{DOWN}{CTRLUP}")
 
    unstuck()
 EndFunc
@@ -401,9 +414,8 @@ EndFunc
 func fishing($1,$2,$3,$4)
 	  $range = guictrlread($fishsqm)*50
 	  If $cap_global[1] >= 6 Then
-		 _MouseClickPlus($hwnd,"right",$wedkax,$wedkay,1)
-		 Sleep(5)
-		 _MouseClickPlus($hwnd,"left",Round($fishx+Random($range*-1, $range)),Round($fishy+Random($range*-1, $range)),1)
+		 _MouseClickPlus($hwnd,"right",$rodxy[0],$rodxy[1],1)
+		 _MouseClickPlus($hwnd,"left",Round($fishxy[0]+Random($range*-1, $range)),Round($fishxy[1]+Random($range*-1, $range)),1)
 	  EndIf
 EndFunc
 
@@ -425,136 +437,22 @@ func healer($1,$2,$3,$4)
 EndFunc
 
 func train($1,$2,$3,$4)
-
    $finalADDR = "0x" & hex($base_adr+$ifattack_static)
    $ifattack = _MemoryPointerRead($finalADDR, $memory_g, $ifattack_offset)
    if $ifattack[1] == 0 Then
-	  _MouseClickPlus($hwnd,"right",$trainx,$trainy,1)
+	  _MouseClickPlus($hwnd,"right",$trainxy[0],$trainxy[1],1)
    EndIf
 EndFunc
 
 ; Mouse positions <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Func mouseposa()
+Func _mousepos()
    While 1
     Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
     If _IsPressed("01", $dll) Then
-        $aim1x = MouseGetPos(0)
-		$aim1y = MouseGetPos(1)
-
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposm()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $manasx = MouseGetPos(0)
-		$manasy = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposf()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $foodx = MouseGetPos(0)
-		$foody = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposs()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $spearx = MouseGetPos(0)
-		$speary = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mousepost()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $trainx = MouseGetPos(0)
-		$trainy = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mousepossd()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $sdx = MouseGetPos(0)
-		$sdy = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposfish()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $fishx = MouseGetPos(0)
-		$fishy = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposwedka()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $wedkax = MouseGetPos(0)
-		$wedkay = MouseGetPos(1)
-	    ExitLoop
-        While _IsPressed("01", $dll)
-            Sleep(10)
-        WEnd
-    EndIf
-   WEnd
-EndFunc
-
-Func mouseposhand()
-   While 1
-    Sleep(10) ; This enough to prevent CPU overload <<<<<<<<<<<<<<<<<<<<<<<<
-    If _IsPressed("01", $dll) Then
-        $handx = MouseGetPos(0)
-		$handy = MouseGetPos(1)
+		local $xy = MouseGetPos()
+	    Return $xy
 	    ExitLoop
         While _IsPressed("01", $dll)
             Sleep(10)
