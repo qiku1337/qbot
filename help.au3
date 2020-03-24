@@ -6,9 +6,10 @@ func help1()
 	"Fishing - lowi do skonczenia capa" & @CRLF & _
 	"Reconnect - laczy ponownie jesli postac zostala wylogowana przez x minut" & @CRLF & @LF & _
 	"Poradnik ustawiania runemakera:" & @CRLF & _
-	"Standardowo: mana na rune, hotkey, zaznaczyć Runemaker. Food xy - najlepiej miec 1 wolna reke do ktorej bedziemy lowic rybe i z niej jesc." & _
+	"Ustawić ile many na rune, hotkey, zaznaczyć Runemaker. Food xy - najlepiej miec 1 wolna reke do ktorej bedziemy lowic rybe i z niej jesc." & _
     "dodatkowo zeby postac wylogowywala - Player on screen logout, reconnect - zaleca sie po 5 minutach lub wiecej. Antiafk, do tego ustawic" & _
-	"xy fishing na wode, xy wedki, fishing z zasiegiem 2-3. Nalowic rybek do skonczenia capa. Bot bedzie zjadal z reki rybe, jak zje to zlowi kolejna." & @CRLF & @LF & _
+	"xy fishing na wode, xy wedki, fishing z zasiegiem 2-3. Nalowic rybek do skonczenia capa. Bot bedzie zjadal z reki rybe, jak zje to zlowi kolejna."  & @CRLF & _
+	"Przycisk PL,UH sluza do ustawienia pozycji gracza oraz uha w bp dla funkcji healbot zaznaczenie uh"& @CRLF & @LF & _
 	"Klawisz PauseBreak wylacza bota w razie naglych przyadkow")
 EndFunc
 

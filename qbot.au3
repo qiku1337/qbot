@@ -17,28 +17,35 @@
 #include <ComboConstants.au3>
 #include <Process.au3>
 #include <mouse.au3>
-#include <keyboard.au3>
 #include <WinAPI.au3>
 
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_icon=qbot.ico
+#pragma compile(FileVersion, 0.0.4.3, 0.0.4.3)
+#pragma compile(FileDescription, QBot-Tibia bot)
+#pragma compile(ProductName, QBot)
+#pragma compile(LegalCopyright, © Wiktor Skrobinski)
 #RequireAdmin
-;#NoTrayIcon
+#NoTrayIcon
 
 HotKeySet("{PAUSE}", "KILL")
 global $dll = DllOpen("user32.dll")
 
 $RunningTime = TimerInit()
 
+;GetCurrentSoftwareVersion()
+;doVersionCheck()
+
+
 global $pid,$memory_g,$name,$RunemakerInput,$ManaInput,$HealSpellIn,$HealMana,$Manacurr,$handle,$HpInput,$Hpcurr,$HealHot,$Manaheal,$Capcurr,$Battlecurr
 global $handx,$handy
 global $id4,$Bot,$namelab,$watchon,$color,$fishsqm
 
 global $aim1xy = ["0","0"],$aim2xy = ["0","0"],$aim3xy = ["0","0"],$aim4xy = ["0","0"],$trainxy = ["0","0"],$foodxy = ["0","0"]
-global $spearxy = ["0","0"],$fishxy = ["0","0"], $rodxy = ["0","0"], $handxy = ["0","0"]
+global $spearxy = ["0","0"],$fishxy = ["0","0"], $rodxy = ["0","0"], $handxy = ["0","0"], $aimuhxy  = ["0","0"], $aimplxy = ["0","0"]
 global $reccnt = 0,$reconnectmin
 
-global $demo = 1
+global $demo = 0
 
 pop()
 
@@ -49,7 +56,7 @@ EndFunc
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot V4.1", 213, 320, 0, 60)
+	  $Bot = GUICreate("Qbot V4.2("&$pid&")", 213, 320, 0, 60)
 	  $Ramka = GUICtrlCreateTab(2, 2, 210, 310)
 	  GUICtrlCreateTabItem("Runes")
 	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
@@ -69,9 +76,10 @@ Func botgui()
 	  $HpInput = GUICtrlCreateInput("300", 20, 82, 32, 22)
 	  $Manaheal = GUICtrlCreateInput("25", 20, 102, 32, 22)
 	  $HealHot = GUICtrlCreateCombo("", 60, 90, 50, 25)
-	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}")
+	  GUICtrlSetData(-1, "{f1}|{f2}|{f3}|{f4}|{f5}|{f6}|{f7}|{f8}|{f9}|{f10}|{f11}|{f12}|uh")
 	  $Healon = GUICtrlCreateCheckbox("Healer On", 124, 87, 73, 25)
-
+	  $uhxybut = GUICtrlCreateButton("UH", 160, 110, 20, 20)
+	  $plxybut = GUICtrlCreateButton("PL", 140, 110, 20, 20)
 
 	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 127, 68, 17)
 	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 44, 141, 108, 17)
@@ -124,6 +132,7 @@ Func botgui()
 	  GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
+ConsoleWrite(FileGetVersion(@ScriptDir & "\qbot.exe"))
 
 WinSetOnTop($Bot, "", 1)
 
@@ -180,7 +189,7 @@ While 1
 
 	  Case $Healon
 		 If _IsChecked($Healon) Then
-			$id6 = _Timer_SetTimer($Bot,100,"healer")
+			$id6 = _Timer_SetTimer($Bot,400,"healer")
 		 Else
 			_Timer_KillTimer($Bot,$id6)
 		 EndIf
@@ -222,6 +231,7 @@ While 1
 
 	  Case $hoton
 		 If _IsChecked($hoton) Then
+			opt("MouseCoordMode", 1)
 			HotKeySet("{" & guictrlread($hotkey_1) & "}", "_aim_hotkey_1")
 			   $hotkey1temp = "{" & guictrlread($hotkey_1) & "}"
 			HotKeySet("{" & guictrlread($hotkey_2) & "}", "_aim_hotkey_2")
@@ -263,6 +273,12 @@ While 1
 
 	  Case $handxybut
 		 $handxy = _mousepos()
+
+	  Case $uhxybut
+		 $aimuhxy = _mousepos()
+
+	  Case $plxybut
+		 $aimplxy = _mousepos()
 
 	EndSwitch
 
@@ -321,6 +337,18 @@ Func _drag_hotkey_1()
 	  EndIf
 EndFunc
 
+Func _uh_hotkey_1()
+	  local $mxy = MouseGetPos()
+	  	  If $aimuhxy[0] == 0 Or $aimplxy[0] == 0 Then
+		  error99()
+	   Else
+		 _MouseClickPlus($hWnd,"right",$aimuhxy[0],$aimuhxy[1],1)
+		 _MouseClickPlus($hWnd,"left",$aimplxy[0],$aimplxy[1],1)
+		 ;MouseClick("right",$aimuhxy[0], $aimuhxy[1],1,1)
+		 ;MouseClick("left",$aimplxy[0],$aimplxy[1],1,1)
+	  EndIf
+EndFunc
+
  ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 func name($1,$2,$3,$4)
@@ -345,9 +373,10 @@ func name($1,$2,$3,$4)
 
    If $demo == 1 Then
 	  local $time = Round(TimerDiff($RunningTime)/1000)
-	  local $left = 120
+	  local $left = 180
 	  WinSetTitle($Bot,"",$left-$time & " DEMO exit")
 	  If TimerDiff($RunningTime)/1000 > $left Then
+	  ;If $name[1] <> "Horhe" Then
 		 KILL()
 	  EndIf
    EndIf
@@ -384,19 +413,24 @@ func watch($1,$2,$3,$4)
    if ($battleval_global[1]>=1) Then
 	  controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
 	  SoundPlay(@WindowsDir & "\media\tada.wav", 1)
-	  ;GUICtrlSetState($watchon,$GUI_UNCHECKED)
-	  ;_Timer_KillTimer($Bot,$id4)
+	  GUICtrlSetState($watchon,$GUI_UNCHECKED)
+	  _Timer_KillTimer($Bot,$id4)
 	  unstuck()
    EndIf
 EndFunc
 
 func reconnect($1,$2,$3,$4)
    ;0 albo 257
-   ConsoleWrite($reccnt&@LF)
+   ConsoleWrite($reccnt& " " & $islogin_global[1]&@LF)
    If $islogin_global[1] == 0 Then
 	  $reccnt = $reccnt+1
 	  If $reccnt >= guictrlread($reconnectmin)*60 Then
-	  ControlSend($hWnd,"","","{enter}")
+		 ControlSend($hWnd,"","","{enter}")
+		 GUICtrlSetState($watchon,$GUI_CHECKED)
+		 $id4 = _Timer_SetTimer($Bot,50,"watch")
+		 If $islogin_global[1] <> 0 Then
+			$reccnt = 0
+		 EndIf
 	  EndIf
    Else
 	  $reccnt = 0
@@ -404,16 +438,10 @@ func reconnect($1,$2,$3,$4)
 EndFunc
 
 func afk($1,$2,$3,$4)
-
-   ;$ret = DllCall("user32.dll", "int", "MapVirtualKey", "int", 0x11, "int", 0)
-   ;ConsoleWrite($ret)
-   ;DllCall("user32.dll", "int", "PostMessage", "hwnd", $hWnd, "int", $WM_KEYDOWN, "int", 0x35, "long", _MakeLong(1, 0x35))
-   ;Sleep(1)
-   ;DllCall("user32.dll", "int", "PostMessage", "hwnd", $hWnd, "int", $WM_KEYUP, "int", 0x11, "long", _MakeLong(1, 0x35) + 0xC0000000)
    ControlSend($hwnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
-   ControlSend($hwnd,"","","{CTRLDOWN}{DOWN}{CTRLUP}")
+   Sleep(100)
 
-   unstuck()
+   ;unstuck()
 EndFunc
 
 func afk2($1,$2,$3,$4)
@@ -443,10 +471,16 @@ EndFunc
 func healer($1,$2,$3,$4)
    $hpclient = guictrlread($HpInput)
    $manaclient = guictrlread($Manaheal)
+   If guictrlread($HealHot) <> "uh" Then
 	  if $hp_global[1] <= $hpclient And $mana_global[1] >= $manaclient Then
 		 $spellname = guictrlread($HealHot)
 		 controlsend($hWnd,"","",$spellname)
 	  EndIf
+   Else
+	  If $hp_global[1] <= $hpclient Then
+		 _uh_hotkey_1()
+	  EndIf
+   EndIf
 EndFunc
 
 func train($1,$2,$3,$4)

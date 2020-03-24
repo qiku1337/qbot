@@ -13,11 +13,10 @@
 ; Remarks:      You MUST be in "MouseCoordMode" 0 to use this without bugs.
 ; Author(s):      Insolence <insolence_9@yahoo.com>
 ;
-;===============================================================================
-;opt("MouseCoordMode", 0)
-
+;==============================================================================
 
 Func _MouseClickPlus($handle, $Button = "left", $X = "", $Y = "", $Clicks = 1)
+  opt("MouseCoordMode", 0)
   Local $MK_LBUTTON    =  0x0001
   Local $WM_LBUTTONDOWN   =  0x0201
   Local $WM_LBUTTONUP    =  0x0202
@@ -48,15 +47,13 @@ Func _MouseClickPlus($handle, $Button = "left", $X = "", $Y = "", $Clicks = 1)
      $Y = $MouseCoord[1]
   EndIf
   For $i = 1 to $Clicks
-	 local $mxy = MouseGetPos()
-	 _MouseTrap($X,$Y)
+	 ;local $mxy = MouseGetPos()
+	 ;_MouseTrap($X,$Y)
      DllCall($dll, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X, $Y-25))
-
-
      DllCall($dll, "int", "SendMessage", "hwnd", $handle, "int", $ButtonDown, "int", $Button, "long", _MakeLong($X, $Y-25))
      DllCall($dll, "int", "SendMessage", "hwnd", $handle,  "int", $ButtonUp, "int", $Button, "long", _MakeLong($X, $Y-25))
-	  _MouseTrap()
-	   MouseMove($mxy[0],$mxy[1],1)
+	  ;_MouseTrap()
+	  ; MouseMove($mxy[0],$mxy[1],1)
   Next
 EndFunc
 
@@ -95,6 +92,7 @@ Func _MouseDragPlus($handle, $Button = "left", $X = "", $Y = "", $X2 = "", $Y2 =
 
 	 DllCall($dll, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X2-5, $Y2-25))
      DllCall($dll, "int", "SendMessage", "hwnd", $handle,  "int", $ButtonUp, "int", $Button, "long", _MakeLong($X2-5, $Y2-25))
+	 opt("MouseCoordMode", 1)
 EndFunc
 
 Func _MakeLong($LoWord,$HiWord)
