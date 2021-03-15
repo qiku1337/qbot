@@ -187,6 +187,7 @@ func checklic_day()
 			Exit
 
 	   Case $Unlock
+		   global $licenceday = getlicence($hardid)
 			If getlicence($hardid) >= 1 Then
 			   GUISetState(@SW_HIDE)
 			   pop()

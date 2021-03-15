@@ -31,6 +31,7 @@
 #include "Includes/sql.au3"
 #include <Includes/ImageSearch.au3>
 #include <pop.au3>
+#include <Includes/motd.au3>
 
 
 #include <Includes/address/address_Askara.au3>
@@ -58,6 +59,7 @@ global $aim1xy = ["0","0"],$aim2xy = ["0","0"],$aim3xy = ["0","0"],$aim4xy = ["0
 global $reccnt = 0,$cntup = 0,$fadeon = 0,$logon = 1,$logdel = 0
 global $ch100x = 0, $ch100y = 0
 global $gtlx = 0, $gtly = 0
+global $ifcd = 1
 
 checklic_day()
 ;pop()
@@ -72,7 +74,8 @@ Func botgui()
 #Region ### START Koda GUI section ### Form=
 	  $Bot_1 = GUICreate("Qbot ("&$pid&")", 215, 360, 0, 60)
 
-	  $butinfo1 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
+	  $butinfo1 = GUICtrlCreateButton("?", 170, 3, 20, 20, $BS_CENTER)
+	  $but_motd = GUICtrlCreateButton("M", 190, 3, 20, 20, $BS_CENTER)
 
 	  $Ramka = GUICtrlCreateTab(2, 2, 210, 352)
 	  GUICtrlCreateTabItem("Healer")
@@ -93,7 +96,7 @@ Func botgui()
 	  $Afkon = GUICtrlCreateCheckbox("Safe log", 147, 30, 53, 25)
 	  $Lighton = GUICtrlCreateCheckbox("Full light", 147, 50, 53, 25)
 
-	  $Label3 = GUICtrlCreateLabel("Delay, %hp/mana,  hotkey,    on/off", 19, 71, 164, 17)
+	  $Label3 = GUICtrlCreateLabel("Delay, %hp/mana,  hotkey, on/off", 19, 71, 164, 17)
 
 	  global $heal1del = GUICtrlCreateInput(_loadconfig("healdel"), 7, 120, 41, 22)
 	  global $senzu1del = GUICtrlCreateInput(_loadconfig("sen1del"), 7, 196, 41, 22)
@@ -166,11 +169,11 @@ Func botgui()
 
 
 WinSetOnTop($Bot, "", 1)
-$id0 = _Timer_SetTimer($Bot,200,"name")
+$id0 = _Timer_SetTimer($Bot,10,"name")
 $id99 = _Timer_SetTimer($Bot,1000,"nameupdate")
 $id98 = _Timer_SetTimer($Bot,1000,"fade")
-$id97 = _Timer_SetTimer($Bot,1000*60*60*6,"license")
-$id96 = _Timer_SetTimer($Bot,1000*60*5,"telemetry_update")
+$id97 = _Timer_SetTimer($Bot,1000*60*60*12,"license")
+;$id96 = _Timer_SetTimer($Bot,1000*60*5,"telemetry_update")
 
 While 1
    $nMsg = GUIGetMsg()
@@ -183,16 +186,23 @@ While 1
 	Case $butinfo1
 		help_kas()
 
+	Case $but_motd
+		motd()
+
 	Case $heal1on
 		If _IsChecked($heal1on) Then
-			IF guictrlread($heal1del) == "" Or guictrlread($heal1del) < 200 Then
-				MsgBox($MB_OK,"Info","Ustaw Delay (pierwsza kolumna) wiecej jak 200")
+			IF guictrlread($heal1del) == "" Or guictrlread($heal1del) <> 100 Then
+				MsgBox($MB_OK,"Info","Ustaw Delay 100 healbot")
 				GUICtrlSetState($heal1on,$GUI_UNCHECKED)
 			Else
-				$id1 = _Timer_SetTimer($Bot,guictrlread($heal1del),"_heal1")
+				;$id1 = _Timer_SetTimer($Bot,guictrlread($heal1del),"_heal1")
+				$id1 = _Timer_SetTimer($Bot,10,"_heal1")
+				global $healcd = guictrlread($heal1del)
+				$ifcd = 1
 			EndIf
 		Else
 			_Timer_KillTimer($Bot,$id1)
+			$healcd = 0
 		EndIf
 
 	Case $senzu1on
@@ -350,7 +360,6 @@ Func saveconfigall()
    ;_saveconfig($hotkey_3,"hotkey_3")
    _saveconfig($hotkey_4,"hotkey_4")
 EndFunc
-;funkcja ischeckbox
 
 Func _IsChecked($idControlID)
     Return BitAND(GUICtrlRead($idControlID), $GUI_CHECKED) = $GUI_CHECKED
@@ -541,19 +550,33 @@ func _heal1($1,$2,$3,$4)
    $hpinhi = guictrlread($HpInput2)
    $mpinhi = guictrlread($MpInput2)
    $hp_pc = $hp_global[1] * 100 / $hp_max_global[1]
-   ;ConsoleWrite($hp_pc & @CRLF)
+   if $healcd == 0 Then
 	  if $hp_pc <= $hpinhi And $mana_global[1] >= $mpinhi Then
 		 $spellname = guictrlread($HealHot2)
 		 KeySend($hwnd,$spellname)
 		 ;ConsoleWrite("STRONG"&@CRLF)
+		 $healcd = guictrlread($heal1del)
+		 $ifcd = 1
 	  ElseIf $hp_pc <= $hpinhi And $mana_global[1] <= $mpinhi Then
 		 ;donothing
 		 ;ConsoleWrite("Nothing"&@CRLF)
+		 $healcd = guictrlread($heal1del)
+		 $ifcd = 1
 	  ElseIf $hp_pc <= $hpinlow And $mana_global[1] >= $mpinlow Then
 		 $spellname = guictrlread($HealHot1)
 		 KeySend($hwnd,$spellname)
 		 ;ConsoleWrite("SOFT"&@CRLF)
+		 $healcd = guictrlread($heal1del)
+		 $ifcd = 1
 	  EndIf
+   EndIf
+
+   If $ifcd == 1 Then
+	   $healcd = $healcd - 10
+	   If $healcd == 0 Then $ifcd = 0
+   EndIf
+
+   ConsoleWrite($healcd&@CRLF)
 EndFunc
 
 func _senzu1($1,$2,$3,$4)
@@ -588,7 +611,7 @@ func _lifering($1,$2,$3,$4)
 	ConsoleWrite($ringslot_global[1]&@CRLF)
 	If $ringslot_global[1] == 0 Then
 		_MouseDragPlusW($hWnd,"left",$liferingxy[0],$liferingxy[1],$slotxy[0],$slotxy[1])
-		ConsoleWrite("LAJF RING"&@CRLF)
+		;ConsoleWrite("LAJF RING"&@CRLF)
 	EndIf
 EndFunc
 

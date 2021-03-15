@@ -31,9 +31,12 @@ EndFunc
 
 Func help_kas()
 	MsgBox($MB_OK,"Info","Pierwsza kolumna - delay w milisekundach, zalecana wartosc od 200 do 20000" & @CRLF & _
-	"Druga kolumna - hp lub mana w zaleznosci od funkcji, dla leczenia gorna jest od hp, dolna od many - osobno dla soft oraz pwr" & @CRLF & _
+	"Druga kolumna - hp lub mana w zaleznosci od funkcji, dla leczenia gorna jest od hp, dolna od many - osobno dla soft oraz pwr / dla fishingu jest cap" & @CRLF & _
 	"Trzecia kolumna - hotkey od F1 do F12" & @CRLF & _
 	"Czwarta kolumna - wlaczanie funkcji bota - zalecia sie wlaczanie z wypelnionymi polami" & @CRLF & _
+	"Przyciski Water/XY -> najpierw kliknać przycisk następnie lewym przyciskiem myszy kliknąć na wode/xy life ringa/slota life ringa w eq" & @CRLF & _
+	"Opcja lootowania golda oraz zamiana 100 gold - nalezy Loot XY ustawic w miejsce konca BP pod ktorym beda sie otwierac kolejne bp do lootwania(lewy dolny rog)" & @CRLF & _
+	"Z zakladki AIM nalezy ustawic hotkey drag_XY - jest to miejsce w ktore bedzie przenoszony gold" & @CRLF & _
 	"Kontakt qiku00@gmail.com")
 EndFunc
 

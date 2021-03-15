@@ -21,7 +21,7 @@ global $cap_offset[2] = [Null, Dec("478")]
 global $rslot_static = 0x008036F0
 global $rslot_offset[2] = [Null, Dec("380")]
 
-global $light_static = 0x008036F0
+global $light_static = 0
 Global $light_offset[2] = [Null, 164]
 
 global $battle_static = 0x00804064

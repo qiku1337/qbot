@@ -1,16 +1,3 @@
-#NoTrayIcon
-#RequireAdmin
-#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=Includes\qbot.ico
-#AutoIt3Wrapper_Outfile=qbot_7.4_.exe
-#AutoIt3Wrapper_Outfile_x64=qbot_7.4.exe
-#AutoIt3Wrapper_Res_Fileversion=0.0.7.0
-#AutoIt3Wrapper_Res_Fileversion_AutoIncrement=y
-#AutoIt3Wrapper_Res_ProductName=Qbot
-#AutoIt3Wrapper_Res_ProductVersion=0.0.7.0
-#AutoIt3Wrapper_Run_AU3Check=n
-#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-
 #include <ButtonConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
@@ -33,20 +20,25 @@
 #include <Includes/help.au3>
 #include <Includes/config.au3>
 #include <Includes/mouse.au3>
-#include "Includes/sql.au3"
 #include <pop.au3>
 
-#include <Includes/Address/address_blank.au3>
 
+;#include <address_Realesta.au3>
+;#include <address_Nostalrius.au3>
+#include <Includes/address_Mastercores.au3>
 
 #Region
+;#AutoIt3Wrapper_UseX64=n
+#AutoIt3Wrapper_icon=qbot.ico
 
-#pragma compile(Fileversion, 0.0.0.39)
+#pragma compile(FileVersion, 0.0.5.1, 0.0.5.1)
 #pragma compile(FileDescription, QBot-Tibia bot)
 #pragma compile(ProductName, QBot)
 #pragma compile(LegalCopyright, © Wiktor Skrobinski)
 #EndRegion
 
+#RequireAdmin
+#NoTrayIcon
 
 HotKeySet("{PAUSE}", "KILL")
 
@@ -57,76 +49,67 @@ $RunningTime = TimerInit()
 ;GetCurrentSoftwareVersion()
 ;doVersionCheck()
 
-global $pid,$memory_g,$name,$ver="74"
-global $handx,$handy
-global $Bot,$namelab,$watchon,$color,$fishsqm,$bval
-global $logdel = 0,$logon = 1
 
-global $aim1xy[2] = ["0","0"],$aim2xy[2] = ["0","0"],$aim3xy[2] = ["0","0"],$aim4xy[2] = ["0","0"],$trainxy[2] = ["0","0"],$foodxy[2] = ["0","0"]
-global $spearxy[2] = ["0","0"],$fishxy[2] = ["0","0"], $rodxy[2] = ["0","0"], $handxy[2] = ["0","0"], $aimuhxy[2]  = ["0","0"], $aimplxy[2] = ["0","0"]
-global $logoutxy[2] = ["0","0"], $mapxy[2] = ["0","0"], $manafluidxy[2]=["0","0"],$liferingxy[2] = ["0","0"],$slotxy[2] = ["0","0"]
+global $pid,$memory_g,$name
+global $handx,$handy
+global $id4,$id5,$id6,$id9,$Bot,$namelab,$watchon,$color,$fishsqm,$bval
+
+global $aim1xy = ["0","0"],$aim2xy = ["0","0"],$aim3xy = ["0","0"],$aim4xy = ["0","0"],$trainxy = ["0","0"],$foodxy = ["0","0"]
+global $spearxy = ["0","0"],$fishxy = ["0","0"], $rodxy = ["0","0"], $handxy = ["0","0"], $aimuhxy  = ["0","0"], $aimplxy = ["0","0"]
 global $reccnt = 0,$cntup = 0,$fadeon = 0,$gethp = 1,$maxhp
 
 global $demo = 0
 
-;checklic()
-checklic_day()
-;pop()
+pop()
 
 Func KILL()
     saveconfigall()
     Exit 0
 EndFunc
 
+Func saveconfigall()
+   _saveconfig($HpInput,"healhp")
+   _saveconfig($Manaheal,"healmana")
+   _saveconfig($HealHot,"healhotkey")
+   _saveconfig($ManaInput,"runemana")
+   _saveconfig($RunemakerInput,"runehotkey")
+   _saveconfig($reconnectmin,"recconect_time")
+   _saveconfig($hotkey_1,"hotkey_1")
+   _saveconfig($hotkey_2,"hotkey_2")
+   _saveconfig($hotkey_3,"hotkey_3")
+   _saveconfig($hotkey_4,"hotkey_4")
+EndFunc
+
 Func botgui()
 
 #Region ### START Koda GUI section ### Form=
-	  $Bot = GUICreate("Qbot ("&$pid&")", 215, 340, 0, 60)
+	  $Bot = GUICreate("Qbot V.4.4("&$pid&")", 215, 340, 0, 60)
 	  $Ramka = GUICtrlCreateTab(2, 2, 210, 330)
-
-	  GUICtrlCreateTabItem("Heal");------------------------------------------------------------------------------------------------------------------------------------
-
+	  GUICtrlCreateTabItem("Runes")
 	  $butinfo1 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
-	  GUICtrlCreateLabel("Name", 20, 27, 56, 17)
+	  ;global $List2= GUICtrlCreateList("", 30, 332, 129, 184)
+	  $NameLabel = GUICtrlCreateLabel("Name", 20, 27, 56, 17)
 	  $namelab = GUICtrlCreateLabel("???", 60, 27, 188, 17)
-	  GUICtrlCreateLabel("Hp", 21, 45, 31, 17)
+	  $hplabel = GUICtrlCreateLabel("Hp", 21, 45, 31, 17)
 	  global $Hpcurr = GUICtrlCreateLabel("0", 58, 45, 36, 17)
-	  GUICtrlCreateLabel("Mana", 20, 61, 31, 17)
+	  $manalabel = GUICtrlCreateLabel("Mana", 20, 61, 31, 17)
 	  global $Manacurr = GUICtrlCreateLabel("0", 58, 61, 28, 17)
-	  GUICtrlCreateLabel("Cap", 91, 45, 31, 17)
+	  $caplabel = GUICtrlCreateLabel("Cap", 91, 45, 31, 17)
 	  global $Capcurr = GUICtrlCreateLabel("0", 118, 45, 36, 17)
-	  $battlelabel = GUICtrlCreateLabel("Battle debug", 151, 45, 33, 39)
-	  global $Battlecurr = GUICtrlCreateLabel("0", 178, 45, 36, 17)
+	  $battlelabel = GUICtrlCreateLabel("Screen player +2sqm", 151, 45, 33, 39)
+	  global $Battlecurr = GUICtrlCreateLabel("0", 188, 45, 36, 17)
 
-	  GUICtrlCreateLabel("Healbot", 90, 80, 68, 17)
-	  global $HpInput = GUICtrlCreateInput(_loadconfig("healhp"), 20, 100, 32, 22)
-	  GUICtrlCreateLabel("H", 10, 102, 56, 17)
-	  global $Manaheal = GUICtrlCreateInput(_loadconfig("healmana"), 20, 120, 32, 22)
-	  GUICtrlCreateLabel("M", 10, 123, 56, 17)
-	  global $HealHot = GUICtrlCreateCombo(_loadconfig("healhotkey"), 60, 120, 40, 25)
+	  $Label3 = GUICtrlCreateLabel("Healbot", 91, 69, 68, 17)
+	  global $HpInput = GUICtrlCreateInput(_loadconfig("healhp"), 20, 82, 32, 22)
+	  global $Manaheal = GUICtrlCreateInput(_loadconfig("healmana"), 20, 102, 32, 22)
+	  global $HealHot = GUICtrlCreateCombo(_loadconfig("healhotkey"), 60, 90, 50, 25)
 	  GUICtrlSetData(-1, "F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|uh")
-	  global $Healon = GUICtrlCreateCheckbox("Auto Heal", 124, 110, 73, 20)
-	  $uhxybut = GUICtrlCreateButton("UH", 60, 100, 20, 20)
-	  $plxybut = GUICtrlCreateButton("PL", 80, 100, 20, 20)
+	  global $Healon = GUICtrlCreateCheckbox("Healer On", 124, 87, 73, 20)
+	  $uhxybut = GUICtrlCreateButton("UH", 160, 110, 20, 20)
+	  $plxybut = GUICtrlCreateButton("PL", 140, 110, 20, 20)
 
-	  global $ManafluidInput = GUICtrlCreateInput(_loadconfig("manafluidmana"), 20, 160, 32, 22)
-	  GUICtrlCreateLabel("M", 10, 163, 56, 17)
-	  $mfxybut = GUICtrlCreateButton("MF", 70, 160, 20, 20)
-	  global $manafluidon = GUICtrlCreateCheckbox("Auto Manafluid", 100, 160, 100, 20)
-	  GUICtrlCreateLabel("Delay in ms for heal/mana"& @LF &"Fill this before use healbot", 20, 200, 130, 25)
-	  global $delay = GUICtrlCreateInput(_loadconfig("delay"), 150, 200, 32, 22)
-
-	  GUICtrlCreateLabel("UH Hoykey", 20, 250, 70, 25)
-	  global $hotkey_uh = GUICtrlCreateInput(_loadconfig("hotkey_uh"), 80, 245, 49, 22)
-	  $hotuhon = GUICtrlCreateCheckbox("Hotkey on", 135, 245, 70, 17)
-
-	  GUICtrlCreateTabItem("Afk") ;------------------------------------------------------------------------------------------------------------------------------------
-
-	  $liferingxybut = GUICtrlCreateButton("XY", 52, 305, 32, 22, $BS_CENTER)
-	  $slotxybut = GUICtrlCreateButton("Slot XY", 92, 305, 50, 22, $BS_CENTER)
-	  global $lifecolor = GUICtrlCreateLabel("Lifering", 12, 308, 36, 17)
-	  $lfieringon = GUICtrlCreateCheckbox("Life ring", 147, 305, 52, 20)
-
+	  $RuneLabel = GUICtrlCreateLabel("Runemaker", 68, 127, 68, 17)
+	  $ManaLabel = GUICtrlCreateLabel("Mana to cast + hotkey", 44, 141, 108, 17)
 	  global $ManaInput = GUICtrlCreateInput(_loadconfig("runemana"), 20, 164, 32, 22)
 	  global $RunemakerInput = GUICtrlCreateCombo(_loadconfig("runehotkey"), 60, 164, 50, 25)
 	  GUICtrlSetData(-1, "F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12")
@@ -135,28 +118,23 @@ Func botgui()
 	  $Afkon = GUICtrlCreateCheckbox("Anti Afk", 124, 229, 60, 17)
 	  $Afkon2 = GUICtrlCreateCheckbox("Anti Afk2", 124, 249, 60, 17)
 
-	  $watchon = GUICtrlCreateCheckbox("Safe log", 20, 210, 60, 17)
+	  $watchon = GUICtrlCreateCheckbox("Safe logout", 20, 210, 90, 17)
 	  $alarmon = GUICtrlCreateCheckbox("Attack alarm", 124, 210, 80, 17)
 	  $reconnecton = GUICtrlCreateCheckbox("Reconnect", 20, 230, 70, 17)
 	  global $reconnectmin = GUICtrlCreateInput(_loadconfig("recconect_time"), 95, 230, 20, 20)
 	  $foodbut = GUICtrlCreateButton("Food xy", 18, 190, 93, 17)
-	  ;$logbut = GUICtrlCreateButton("Logxy", 80, 210, 35, 17)
 	  $fishingbut = GUICtrlCreateButton("Fishing xy", 18, 250, 50, 17)
 	  $wedkabut = GUICtrlCreateButton("Wedka xy", 67, 250, 53, 17)
 	  global $eatfoodcheck = GUICtrlCreateCheckbox("Eat food", 124, 190, 73, 17)
 	  global $fishingon = GUICtrlCreateCheckbox("Fish around", 18, 270, 73, 17)
 	  $fishsqm = GUICtrlCreateInput("2", 95, 270, 20, 20)
 	  $fishlabel = GUICtrlCreateLabel("SQM from fishing xy", 120, 270, 52, 27)
-	  $unstuckbut = GUICtrlCreateButton("Ctrl unstuck", 100, 29, 70, 20)
+	  $unstuckbut = GUICtrlCreateButton("Help me my ctrl is stuck!", 18, 300, 150, 27)
 
+	  GUICtrlCreateTabItem("Light")
+	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 28, 29, 52, 17)
 
-	  $lightlockLabel = GUICtrlCreateLabel("Light hack", 20, 29, 52, 17)
-	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 20, 50, 117, 25)
-
-	  ;global $List2= GUICtrlCreateList("", 30, 72, 159, 190)
-	  ;$mapxybut = GUICtrlCreateButton("Map x", 4, 274, 73, 25)
-	  ;$waypointbut = GUICtrlCreateButton("Waypoint", 114, 274, 73, 25)
-	  ;$go = GUICtrlCreateButton("Go", 114, 294, 73, 25)
+	  $Lighton = GUICtrlCreateCheckbox("Boze daj mi swiatlo", 36, 49, 117, 25)
 
 	  GUICtrlCreateTabItem("Aim")
 	  $butinfo2 = GUICtrlCreateButton("?", 175, 3, 20, 20, $BS_CENTER)
@@ -193,8 +171,6 @@ WinSetOnTop($Bot, "", 1)
 $id0 = _Timer_SetTimer($Bot,100,"name")
 $id99 = _Timer_SetTimer($Bot,1000,"nameupdate")
 $id98 = _Timer_SetTimer($Bot,1000,"fade")
-$id97 = _Timer_SetTimer($Bot,1000*60*60*20,"license")
-;$id96 = _Timer_SetTimer($Bot,1000*60*5,"telemetry_update")
 ;$id97 = _Timer_SetTimer($Bot,500,"battlelist")
 
 While 1
@@ -237,9 +213,8 @@ While 1
 
 	  Case $watchon
 		 If _IsChecked($watchon) Then
-			$id4 = _Timer_SetTimer($Bot,100,"watch")
+			$id4 = _Timer_SetTimer($Bot,50,"watch")
 			$gethp = 1
-			global $battlevaltemp = $battleval_global[1]
 		 Else
 			_Timer_KillTimer($Bot,$id4)
 		 EndIf
@@ -253,19 +228,14 @@ While 1
 
 	  Case $Healon
 		 If _IsChecked($Healon) Then
-			If guictrlread($delay) < 200 Then
-				 MsgBox($MB_OK,"Info","Set delay more than 200")
-				 GUICtrlSetState($Healon,$GUI_UNCHECKED)
-			Else
-				$id6 = _Timer_SetTimer($Bot,guictrlread($delay),"healer")
-			EndIf
+			$id6 = _Timer_SetTimer($Bot,333,"healer")
 		 Else
 			_Timer_KillTimer($Bot,$id6)
 		 EndIf
 
 	  Case $trainon
 		 If _IsChecked($trainon) Then
-			$id7 = _Timer_SetTimer($Bot,1000,"train")
+			$id7 = _Timer_SetTimer($Bot,2000,"train")
 		 Else
 			_Timer_KillTimer($Bot,$id7)
 		 EndIf
@@ -305,25 +275,6 @@ While 1
 			_Timer_KillTimer($Bot,$id12)
 		 EndIf
 
-	   Case $manafluidon
-		   If _IsChecked($manafluidon) Then
-			If guictrlread($delay) < 200 Then
-				 MsgBox($MB_OK,"Info","Set delay more than 200")
-				 GUICtrlSetState($manafluidon,$GUI_UNCHECKED)
-			Else
-				$id13 = _Timer_SetTimer($Bot,guictrlread($delay),"automanafluid")
-			EndIf
-		 Else
-			_Timer_KillTimer($Bot,$id13)
-		 EndIf
-
-		Case $lfieringon
-		If _IsChecked($lfieringon) Then
-			$id14 = _Timer_SetTimer($Bot,1000,"_lifering")
-		Else
-			_Timer_KillTimer($Bot,$id14)
-		EndIf
-
 	  Case $hoton
 		 If _IsChecked($hoton) Then
 			opt("MouseCoordMode", 1)
@@ -341,15 +292,6 @@ While 1
 			HotKeySet($hotkey3temp)
 			HotKeySet($hotkey4temp)
 		 EndIf
-
-	   Case $hotuhon
-		   If _IsChecked($hotuhon) Then
-			   opt("MouseCoordMode", 1)
-			    HotKeySet("{" & guictrlread($hotkey_uh) & "}", "_uh_hotkey_2")
-			    $hotkeyuhtemp = "{" & guictrlread($hotkey_uh) & "}"
-		   Else
-				HotKeySet($hotkeyuhtemp)
-		   EndIf
 
 	  Case $hotkey1but
 		 $aim1xy = _mousepos(1)
@@ -384,53 +326,15 @@ While 1
 	  Case $plxybut
 		 $aimplxy = _mousepos(0)
 
-	  Case $mfxybut
-		   $manafluidxy = _mousepos(0)
-
-	Case $liferingxybut
-		$liferingxy = _mousepos(0)
-
-	Case $slotxybut
-		$slotxy = _mousepos(0)
-
-	 ; Case $mapxybut
-	;	 $mapxy = _mousepos(0)
-
-	 ; Case $logbut
-	;	 $logoutxy = _mousepos(0)
-
 	  Case $unstuckbut
 		 unstuck()
 
-	 ; Case $waypointbut
-	;	 GUICtrlSetData($List2,$charx_global[1]& " / " & $chary_global[1] & @CRLF)
-	;	 ConsoleWrite(_MakeLong($charx_global[1], $chary_global[1]))
-
-	;  Case $go
-	;	 _MemoryPointerWrite($finalXY, $memory_g, $charx_offset, 32352)
-	;	 _MemoryPointerWrite($finalXY, $memory_g, $chary_offset, 32230)
-	;	 _MouseClickPlus($hWnd,"left",$mapxy[0],$mapxy[1],1)
 	EndSwitch
 
 WEnd
 
 EndFunc
 
-Func saveconfigall()
-   _saveconfig($HpInput,"healhp")
-   _saveconfig($Manaheal,"healmana")
-   _saveconfig($HealHot,"healhotkey")
-   _saveconfig($ManafluidInput,"manafluidmana")
-   _saveconfig($delay,"delay")
-   _saveconfig($ManaInput,"runemana")
-   _saveconfig($RunemakerInput,"runehotkey")
-   _saveconfig($reconnectmin,"recconect_time")
-   _saveconfig($hotkey_1,"hotkey_1")
-   _saveconfig($hotkey_2,"hotkey_2")
-   _saveconfig($hotkey_3,"hotkey_3")
-   _saveconfig($hotkey_4,"hotkey_4")
-   _saveconfig($hotkey_uh,"hotkey_uh")
-EndFunc
 ;funkcja ischeckbox
 
 Func _IsChecked($idControlID)
@@ -469,17 +373,6 @@ Func _aim_hotkey_3()
 	  EndIf
 EndFunc
 
-Func _uh_hotkey_2()
-	  local $mxy = MouseGetPos()
-	  If $aimuhxy[0] == 0 Or $aimplxy == 0 Then
-		 error99()
-	  Else
-		 MouseClick("right",$aimuhxy[0], $aimuhxy[1],1,1)
-		 MouseClick("left",$aimplxy[0],$aimplxy[1],1,1)
-		 MouseMove($mxy[0],$mxy[1],1)
-	  EndIf
-EndFunc
-
 Func _drag_hotkey_1()
 	  local $mxy = MouseGetPos()
 	  	  If $aim4xy[0] == 0 Then
@@ -494,40 +387,40 @@ Func _drag_hotkey_1()
 EndFunc
 
 Func _uh_hotkey_1()
+	  If $aimuhxy[0] == 0 Or $aimplxy[0] == 0 Then
+		 GUICtrlSetState($Healon,$GUI_UNCHECKED)
+		 _Timer_KillTimer($Bot,$id6)
+		 error99()
+	  Else
 		 _MouseClickPlus($hWnd,"right",$aimuhxy[0],$aimuhxy[1],1)
-		 _MouseClickPlus($hWnd,"left",$aimplxy[0],$aimplxy[1],1)
-EndFunc
 
-Func _manas_hotkey_1()
-		 _MouseClickPlus($hWnd,"right",$manafluidxy[0],$manafluidxy[1],1)
 		 _MouseClickPlus($hWnd,"left",$aimplxy[0],$aimplxy[1],1)
+	  EndIf
 EndFunc
 
  ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 func name($1,$2,$3,$4)
-    $namefinal = "0x" & hex($base_adr+$name_static)
-    global $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[20]")
+   $namefinal = "0x" & hex($base_adr+$name_static)
+   global $name = _MemoryPointerRead($namefinal, $memory_g, $name_offset,"char[20]")
 
-    $finalADDR = "0x" & hex($base_adr+$mana_static)
-    global $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
+   $finalADDR = "0x" & hex($base_adr+$mana_static)
+   global $mana_global = _MemoryPointerRead($finalADDR, $memory_g, $mana_offset,"double")
 
-    $finalADDRh = "0x" & hex($base_adr+$hp_static)
-    global $hp_global = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
+   $finalADDRh = "0x" & hex($base_adr+$hp_static)
+   global $hp_global = _MemoryPointerRead($finalADDRh, $memory_g, $hp_offset,"double")
 
-    $finalADDRcap = "0x" & hex($base_adr+$cap_static)
-    global $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
+   $finalADDRcap = "0x" & hex($base_adr+$cap_static)
+   global $cap_global = _MemoryPointerRead($finalADDRcap, $memory_g, $cap_offset,"double")
 
-    $finalADDRbat = "0x" & hex($base_adr+$battle_static)
-    global $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
+   $finalADDRbat = "0x" & hex($base_adr+$battle_static)
+   global $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
 
-    $finalADDRlogin = "0x" & hex($base_adr+$iflogin_static)
-    global $islogin_global = _MemoryPointerRead($finalADDRlogin, $memory_g, $iflogin_offset)
+   $finalADDRlogin = "0x" & hex($base_adr+$iflogin_static)
+   global $islogin_global = _MemoryPointerRead($finalADDRlogin, $memory_g, $iflogin_offset)
 
-	$finalrslot = "0x" & hex($base_adr+$rslot_static)
-    global $ringslot_global = _MemoryPointerRead($finalrslot, $memory_g, $rslot_offset)
 
-    If $demo == 1 Then
+   If $demo == 1 Then
 	  local $time = Round(TimerDiff($RunningTime)/1000)
 	  local $left = 180
 	  WinSetTitle($Bot,"",$left-$time & " DEMO exit")
@@ -535,21 +428,22 @@ func name($1,$2,$3,$4)
 	  ;If $name[1] <> "Horhe" Then
 		 KILL()
 	  EndIf
-    EndIf
+   EndIf
 EndFunc
 
 func nameupdate($1,$2,$3,$4)
    GUICtrlSetData($Manacurr,$mana_global[1])
    GUICtrlSetData($Hpcurr, $hp_global[1])
-
    If $islogin_global[1] == 0 Then
 	  GUICtrlSetData($namelab,"Disconnected")
    Else
 	  GUICtrlSetData($namelab,$name[1])
    EndIf
-   ;ConsoleWrite($islogin_global[1]&@CRLF)
    GUICtrlSetData($Capcurr,$cap_global[1])
-   GUICtrlSetData($Battlecurr,$battleval_global[1])
+   $bval = ($battleval_global[1]-419)/22
+   ;battleval_global[1]-256
+   GUICtrlSetData($Battlecurr,$bval)
+
    If $cntup == 3 Then
 	  ToolTip("")
 	  $cntup = 0
@@ -562,36 +456,29 @@ func fade($1,$2,$3,$4)
 	  $cntup = $cntup+1
    EndIf
    $gethp = 1
-
-   If $logon == 0 Then
-	  $logdel = $logdel + 1
-   EndIf
-
-   If $logdel == 2 Then
-	  $logon = 1
-	  $logdel = 0
-   EndIf
 EndFunc
 
-func telemetry_update($1,$2,$3,$4)
-   telemetry($hardid,$name[1],$servername_global)
-EndFunc
-
-func license($1,$2,$3,$4)
-	If getlicence($hardid) > 0 Then
-		ConsoleWrite("OK")
-		Else
-			Exit
-		EndIf
+func battlelist($1,$2,$3,$4)
+		 global $offset_node = _Get_Node_Offset()
+		 ConsoleWrite('Current offset node = ' & Hex($offset_node) & @CRLF)
+		 ConsoleWrite('START SEARCHING...' & @CRLF)
+		 _Get_Creatures($memory_g)
+		 ConsoleWrite('END SEARCHING' & @CRLF)
 EndFunc
 
 Func autospear($1,$2,$3,$4)
-   _MouseDragPlusW($hWnd,"left",$trainxy[0],$trainxy[1],$handxy[0],$handxy[1])
-   KeySend($hwnd,"RETURN")
+   _MouseDragPlus($hWnd,"left",$trainxy[0],$trainxy[1],$handxy[0],$handxy[1])
+   controlsend($hWnd,"","","{enter}")
 EndFunc
 
 Func eatfood($1,$2,$3,$4)
-	  _MouseClickPlusW($hWnd,"right",$foodxy[0],$foodxy[1],1)
+   If $foodxy[0] == 0 And $foodxy[1] Then
+	  GUICtrlSetState($eatfoodcheck,$GUI_UNCHECKED)
+	  _Timer_KillTimer($Bot,$id5)
+	  error99()
+   Else
+	  _MouseClickPlus($hWnd,"right",$foodxy[0],$foodxy[1],1)
+   EndIf
 EndFunc
 
 func light($1,$2,$3,$4)
@@ -600,13 +487,12 @@ func light($1,$2,$3,$4)
 EndFunc
 
 func watch($1,$2,$3,$4)
-   If $logon == 1 Then
-	  if ($battleval_global[1] <> $battlevaltemp And $islogin_global[1] <> 0) Then
-		WinActivate($hWnd)
-	    Send("^q")
-		SoundPlay(@WindowsDir & "\media\tada.wav", 0)
-		 $logon = 0
-	  EndIf
+   if (($battleval_global[1]-419)/22>=1) Then
+	  controlsend($hWnd,"","","{ctrldown}{q}{ctrlup}")
+	  SoundPlay(@WindowsDir & "\media\tada.wav", 0)
+	  GUICtrlSetState($watchon,$GUI_UNCHECKED)
+	  _Timer_KillTimer($Bot,$id4)
+	  unstuck()
    EndIf
 EndFunc
 
@@ -629,6 +515,8 @@ func reconnect($1,$2,$3,$4)
 	  $reccnt = $reccnt+1
 	  If $reccnt >= guictrlread($reconnectmin)*60 Then
 		 KeySend($hwnd,"RETURN")
+		 GUICtrlSetState($watchon,$GUI_CHECKED)
+		 $id4 = _Timer_SetTimer($Bot,50,"watch")
 		 $reccnt = 0
 		 If $islogin_global[1] <> 0 Then
 			$reccnt = 0
@@ -647,17 +535,25 @@ func afk($1,$2,$3,$4)
 EndFunc
 
 func afk2($1,$2,$3,$4)
+
    WinActivate($hWnd)
    Send("^{UP}")
    Send("^{DOWN}")
+
 EndFunc
 
 func fishing($1,$2,$3,$4)
+   If $fishxy[0] == 0 And $fishxy[1] And $rodxy[0] And $rodxy[1] Then
+	  GUICtrlSetState($fishingon,$GUI_UNCHECKED)
+	  _Timer_KillTimer($Bot,$id9)
+	  error99()
+   Else
 	  $range = guictrlread($fishsqm)*50
 	  If $cap_global[1] >= 6 Then
-		 _MouseClickPlusW($hwnd,"right",$rodxy[0],$rodxy[1],1)
-		 _MouseClickPlusW($hwnd,"left",Round($fishxy[0]+Random($range*-1, $range)),Round($fishxy[1]+Random($range*-1, $range)),1)
+		 _MouseClickPlus($hwnd,"right",$rodxy[0],$rodxy[1],1)
+		 _MouseClickPlus($hwnd,"left",Round($fishxy[0]+Random($range*-1, $range)),Round($fishxy[1]+Random($range*-1, $range)),1)
 	  EndIf
+   EndIf
 EndFunc
 
 func rune($1,$2,$3,$4)
@@ -681,23 +577,11 @@ func healer($1,$2,$3,$4)
 	  EndIf
    Else
 	  If $hp_global[1] <= $hpclient Then
+		 _BlockInputEx(3)
 		 _uh_hotkey_1()
+		 _BlockInputEx(0)
 	  EndIf
    EndIf
-EndFunc
-
-func automanafluid($1,$2,$3,$4)
-	  if $mana_global[1] <= guictrlread($ManafluidInput) Then
-		_manas_hotkey_1()
-	  EndIf
-EndFunc
-
-func _lifering($1,$2,$3,$4)
-	;ConsoleWrite($ringslot_global[1]&@CRLF)
-	If $ringslot_global[1] == 0 Then
-		_MouseDragPlusW($hWnd,"left",$liferingxy[0],$liferingxy[1],$slotxy[0],$slotxy[1])
-		;ConsoleWrite("LAJF RING"&@CRLF)
-	EndIf
 EndFunc
 
 func train($1,$2,$3,$4)
@@ -706,14 +590,6 @@ func train($1,$2,$3,$4)
    if $ifattack[1] == 0 Then
 	  _MouseClickPlus($hwnd,"right",$trainxy[0],$trainxy[1],1)
    EndIf
-EndFunc
-
-func battlelist($1,$2,$3,$4)
-		 global $offset_node = _Get_Node_Offset()
-		 ConsoleWrite('Current offset node = ' & Hex($offset_node) & @CRLF)
-		 ;ConsoleWrite('START SEARCHING...' & @CRLF)
-		 _Get_Creatures($memory_g)
-		 ;ConsoleWrite('END SEARCHING' & @CRLF)
 EndFunc
 
 ; Mouse positions <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -749,6 +625,21 @@ Func _mousepos($opt = 0)
    WEnd
 EndFunc
 
+Func getpixel()
+   While 1
+    Sleep(10)
+    If _IsPressed("01", $dll) Then
+	    $pixelx = MouseGetPos(0)
+		$pixely = MouseGetPos(1)
+		$color = PixelGetColor($pixelx,$pixely,$hWnd)
+	    ExitLoop
+        While _IsPressed("01", $dll)
+            Sleep(10)
+        WEnd
+    EndIf
+   WEnd
+EndFunc
+
 Func unstuck()
 	  Local $user32 = DllOpen("user32.dll")
    	  $vkvalue = 17
@@ -762,19 +653,21 @@ Func unstuck()
 EndFunc
 
 Func _Get_Node_Offset ()
+
         ; set default values for offsets
 	Local $last_node = 0x0
 	Local $offset_node = 0x0
 
         ; why 200? It means that we will incresing our $offset_node 200*0x4 (most time we will use offsets 0x44, 0xD4, 0x184, 0x304) but its good range if will more creatures on screen.
-	For $i = 0 To 9
-		Local $offset[3] = [$offset_node, 0xC, 0x20]
-		Local $name =_MemoryReadStdString($base_adr + 0x0048C78C, $memory_g, $offset)
+	For $i = 0 To 200
+
+		Local $offset[4] = [Null, $offset_node, 0xC, 0x20]
+		Local $name =_MemoryReadStdString($base_adr + 0x0048B594, $memory_g, $offset)
 		 If $name <> "" Then
 			;ConsoleWrite($name&@CRLF)
 		 EndIf
 
-		If StringLen($name) > 3 and StringLen($name) < 32 Then
+		If StringLen($name) > 2 and StringLen($name) < 32 Then
 			Local $last_node = $offset_node
 		EndIf
 
@@ -800,7 +693,7 @@ EndFunc
 Func _Get_Creatures ($handle)
    ;base addresses and battle list offsets:
    Local $BASE_ADDRESS = $base_adr
-   Local $addrBattleStart = 0x0048C78C
+   Local $addrBattleStart = 0x0048B594
    Local $offset_posx = 0xC
    Local $offset_posy = 0x10
    Local $offset_posz = 0x14
@@ -810,12 +703,13 @@ Func _Get_Creatures ($handle)
    Local $offset_direction = 0x3C
    Local $offset_node = _Get_Node_Offset ()    ;==> last node offset we found it in function above
    Local $scan = 0
-   Local $offset[3] = [$offset_node, 0xC, $offset_name] ;==> offsets to first creature name [ 0x44, 0xC, 0x20]
-   GUICtrlSetData($List2,"")
+   GUICtrlSetData($List2, "")
+   Local $offset[4] = [Null, $offset_node, 0xC, $offset_name] ;==> offsets to first creature name [ 0x44, 0xC, 0x20]
+
         ; read memory for first creature name
 	Local $name = _MemoryReadStdString($BASE_ADDRESS + $addrBattleStart, $handle, $offset)
         ; In this loop we will increasing array with offset by 0x0 until $name of creature will equal empty string "" -> end of battle list.
-	While StringLen($name) > 2 and StringLen($name) < 32
+	While $scan < 20
 		Local $addrStart = '0x' & StringRight(Hex(_MemoryPointerRead($BASE_ADDRESS + $addrBattleStart, $handle, $offset)[0]-$offset_name),8)
 
 		Local $posx = _MemoryRead($addrStart+$offset_posx, $handle)
@@ -825,13 +719,19 @@ Func _Get_Creatures ($handle)
                 Local $hpperc = _MemoryRead($addrStart+$offset_hpperc, $handle, 'byte')   ;==> only 1 byte
                 Local $dir = _MemoryRead($addrStart+$offset_direction, $handle)
 
-		If $posx < 60000 and $posy < 60000 and $posz < 20 Then
+		If $posz < 20 Then
 
 			;ConsoleWrite('$id = ' & $id & ', $posx = ' & $posx& ', $posy = ' & $posy & ', $posz = ' & $posz &  ', $hpperc = ' & $hpperc & ', dir = ' & $dir & ', $name = ' & $name & @CRLF)
 			GUICtrlSetData($List2,'$name = ' & $name & @CRLF)
                 EndIf
-		_ArrayInsert($offset, 1, 0x0)
+		;_ArrayDisplay($offset)
+                ; at end we must add to array next creature offset 0x0 at index nr 1. [0x44, 0xC, 0x20] + 0x0 -> [0x44, 0x0, 0xC, 0x20]
+		_ArrayInsert($offset, 2, 0x0)
 		$name =_MemoryReadStdString($BASE_ADDRESS + $addrBattleStart, $handle, $offset)   ;==> read memory for name of new creature
-	WEnd
- EndFunc
+		$scan += 1
+		For $i = 0 to Ubound($offset) - 1 ; We have an array with three elements but the last index is two.
+			ConsoleWrite($offset[$i] & " ")
+	    Next
 
+	WEnd
+EndFunc
