@@ -14,6 +14,7 @@
 ; Author(s):      Insolence <insolence_9@yahoo.com>
 ;
 ;==============================================================================
+;#include <un.au3>
 
 Func _MouseClickPlus($handle, $Button = "left", $X = "", $Y = "", $Clicks = 1)
   opt("MouseCoordMode", 1)
@@ -47,10 +48,11 @@ Func _MouseClickPlus($handle, $Button = "left", $X = "", $Y = "", $Clicks = 1)
   For $i = 1 to $Clicks
 	 local $mxy = MouseGetPos()
 	 _MouseTrap($mxy[0],$mxy[1])
+	 Sleep(1)
      DllCall($user32, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X-5, $Y-30))
-	 Sleep(1)
+	 ;Sleep(1)
 	 DllCall($user32, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X-5, $Y-30))
-	 Sleep(1)
+	 ;Sleep(1)
      DllCall($user32, "int", "SendMessage", "hwnd", $handle, "int", $ButtonDown, "int", $Button, "long", _MakeLong($X-5, $Y-30))
      DllCall($user32, "int", "SendMessage", "hwnd", $handle,  "int", $ButtonUp, "int", $Button, "long", _MakeLong($X-5, $Y-30))
      _MouseTrap()
@@ -129,14 +131,14 @@ Func _MouseDragPlus($handle, $Button = "left", $X = "", $Y = "", $X2 = "", $Y2 =
      ;ConsoleWrite("NULLE")
   EndIf
     local $mxy = MouseGetPos()
-	 _MouseTrap($mxy[0],$mxy[1])
+	 ;_MouseTrap($mxy[0],$mxy[1])
      DllCall($user32, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X-5, $Y-25))
      DllCall($user32, "int", "SendMessage", "hwnd", $handle, "int", $ButtonDown, "int", $Button, "long", _MakeLong($X-5, $Y-25))
 
 	 DllCall($user32, "int", "SendMessage", "hwnd",$handle, "int", $WM_MOUSEMOVE, "int", 0, "long", _MakeLong($X2-5, $Y2-25))
      DllCall($user32, "int", "SendMessage", "hwnd", $handle,  "int", $ButtonUp, "int", $Button, "long", _MakeLong($X2-5, $Y2-25))
 	 DllClose($user32)
-	_MouseTrap()
+	;_MouseTrap()
 EndFunc
 
 Func _MouseDragPlusW($handle, $Button = "left", $X = "", $Y = "", $X2 = "", $Y2 = "")

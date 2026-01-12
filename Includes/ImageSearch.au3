@@ -27,7 +27,7 @@
 ;       a desktop region to search
 ;
 ;===============================================================================
-Func _ImageSearch($findImage,$resultPosition, ByRef $x, ByRef $y,$tolerance, $HBMP=0)
+Func _ImageSearch($findImage,$tolerance, ByRef $x, ByRef $y,$resultPosition, $HBMP=0)
    return _ImageSearchArea($findImage,$resultPosition,0,0,@DesktopWidth,@DesktopHeight,$x,$y,$tolerance,$HBMP)
 EndFunc
 

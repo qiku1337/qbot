@@ -12,9 +12,11 @@ Func pop()
 		global $NameExeIn = GUICtrlCreateCombo("Select ots", 24, 8, 129, 25, BitOR($CBS_DROPDOWN,$CBS_AUTOHSCROLL))
 
 		If $ver == "74" Then
-			GUICtrlSetData(-1, "OLDtibia74|Realesta7.4|Nostalrius7.4|WeAreTibia7.4|WeAreTibia7.4_OGL")
+			GUICtrlSetData(-1, "OTC7.4|Realesta7.4|Nostalrius7.4|WeAreTibia7.4|WeAreTibia7.4_OGL")
 		ElseIf $ver == "80" Then
-			GUICtrlSetData(-1, "Realera8.0|Kasteria/Askara8.0")
+			GUICtrlSetData(-1, "otclient|Kasteria/Askara8.0|DBL|WAD")
+		ElseIf $ver == "mirage" Then
+		    GUICtrlSetData(-1, "Mirage")
 		EndIf
 
 		$OkBut = GUICtrlCreateButton("OK", 24, 324, 129, 25)
@@ -77,8 +79,8 @@ Func changeaddress()
 		MsgBox($MB_OK,"Info","Wybierz otsa!!")
 		$NameExeIn2 = "blank"
 	EndIf
-	If GUICtrlRead($NameExeIn) == "Realesta7.4" Then
-		#include <Includes\Address\address_Realesta.au3>
+	If GUICtrlRead($NameExeIn) == "OTC7.4" Then
+		#include <Includes\Address\address_otclient.au3>
 		$NameExeIn2 = $clientexe_global
 	EndIf
 	If GUICtrlRead($NameExeIn) == "OLDtibia74" Then
@@ -97,12 +99,24 @@ Func changeaddress()
 		#include <Includes\Address\address_WAT_OGL.au3>
 		$NameExeIn2 = $clientexe_global
 	EndIf
-	If GUICtrlRead($NameExeIn) == "Realera8.0" Then
-		#include <Includes\Address\address_realera.au3>
+	If GUICtrlRead($NameExeIn) == "otclient" Then
+		#include <Includes\Address\address_otclient.au3>
 		$NameExeIn2 = $clientexe_global
 	EndIf
 	If GUICtrlRead($NameExeIn) == "Kasteria/Askara8.0" Then
 		#include <Includes\Address\address_Askara2.au3>
+		$NameExeIn2 = $clientexe_global
+	EndIf
+	If GUICtrlRead($NameExeIn) == "DBL" Then
+		#include <Includes\Address\address_Askara2.au3>
+		$NameExeIn2 = $clientexe_global
+	EndIf
+	If GUICtrlRead($NameExeIn) == "Mirage" Then
+		#include <Includes\Address\address_mirage.au3>
+		$NameExeIn2 = $clientexe_global
+	EndIf
+	If GUICtrlRead($NameExeIn) == "WAD" Then
+		#include <Includes\Address\address_WAD.au3>
 		$NameExeIn2 = $clientexe_global
 	EndIf
 EndFunc

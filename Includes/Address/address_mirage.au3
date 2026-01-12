@@ -1,7 +1,7 @@
 ;adressy zmiennych
-global $clientexe_global = "otclient_dx"
-global $key_global = "QiktorAskara"
-global $servername_global = "Askara2"
+global $clientexe_global = "javaw.exe"
+global $key_global = "QiktorMirage"
+global $servername_global = "Mirage"
 
 global $mana_static = 0x00942AC0
 global $mana_offset[2] = [Null, Dec("4A0")-Dec("58")]

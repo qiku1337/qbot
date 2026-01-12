@@ -2,9 +2,9 @@
 #RequireAdmin
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Includes\qbot.ico
-#AutoIt3Wrapper_Outfile=qbot_8.0_x86.Exe
-#AutoIt3Wrapper_Outfile_x64=qbot_8.0_x64.Exe
+#AutoIt3Wrapper_Outfile_x64=qbot_8.0.Exe
 #AutoIt3Wrapper_Run_AU3Check=n
+#AutoIt3Wrapper_UseX64 = Y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <ButtonConstants.au3>
 #include <ButtonConstants.au3>
@@ -62,7 +62,6 @@ global $gtlx = 0, $gtly = 0
 global $ifcd = 1
 
 ;checklic_day()
-
 pop()
 
 Func KILL()
@@ -90,16 +89,16 @@ Func botgui()
 
 	  $Manacurr = GUICtrlCreateLabel("0", 50, 55, 30, 17)
 
-	  $Label4 = GUICtrlCreateLabel("Hp", 13, 39, 31, 17)
+	  $Label2 = GUICtrlCreateLabel("Hp", 13, 39, 31, 17)
 
 	  $Hpcurr = GUICtrlCreateLabel("0", 50, 39, 30, 17)
 
-	  $Afkon = GUICtrlCreateCheckbox("Afk", 147, 30, 53, 25)
-	  ;GUICtrlSetState($Afkon,$GUI_DISABLE)
+	  $Afkon = GUICtrlCreateCheckbox("Safe log", 147, 30, 53, 25)
+	  GUICtrlSetState($Afkon,$GUI_DISABLE)
 	  $Lighton = GUICtrlCreateCheckbox("Full light", 147, 50, 53, 25)
-	  ;GUICtrlSetState($Lighton,$GUI_DISABLE)
+	  GUICtrlSetState($Lighton,$GUI_DISABLE)
 
-	  $Label5 = GUICtrlCreateLabel("Delay, %hp/mana,  hotkey, on/off", 19, 71, 164, 17)
+	  $Label3 = GUICtrlCreateLabel("Delay, %hp/mana,  hotkey, on/off", 19, 71, 164, 17)
 
 	  global $heal1del = GUICtrlCreateInput(_loadconfig("healdel"), 7, 120, 41, 22)
 	  global $senzu1del = GUICtrlCreateInput(_loadconfig("sen1del"), 7, 196, 41, 22)
@@ -146,11 +145,11 @@ Func botgui()
 	  $unstuckbut = GUICtrlCreateButton("Ctrl unstuck", 100, 3, 70, 20)
 
 	  $change100gold = GUICtrlCreateCheckbox("Change 100", 12, 320, 80, 25)
-	  ;GUICtrlSetState($change100gold,$GUI_DISABLE)
+	  GUICtrlSetState($change100gold,$GUI_DISABLE)
 	  $lootbut = GUICtrlCreateButton("Loot XY", 92, 320, 50, 22, $BS_CENTER)
-	  ;GUICtrlSetState($lootbut,$GUI_DISABLE)
+	  GUICtrlSetState($lootbut,$GUI_DISABLE)
 	  $looton = GUICtrlCreateCheckbox("Loot", 147, 320, 52, 25)
-	  ;GUICtrlSetState($looton,$GUI_DISABLE)
+	  GUICtrlSetState($looton,$GUI_DISABLE)
 
 
 	  GUICtrlCreateTabItem("Aim")
@@ -178,7 +177,7 @@ WinSetOnTop($Bot, "", 1)
 $id0 = _Timer_SetTimer($Bot,10,"name")
 $id99 = _Timer_SetTimer($Bot,1000,"nameupdate")
 $id98 = _Timer_SetTimer($Bot,1000,"fade")
-;$id97 = _Timer_SetTimer($Bot,1000*60*60*12,"license")
+$id97 = _Timer_SetTimer($Bot,1000*60*60*12,"license")
 ;$id96 = _Timer_SetTimer($Bot,1000*60*5,"telemetry_update")
 
 While 1
@@ -249,8 +248,7 @@ While 1
 
 	Case $fishingon
 		If _IsChecked($fishingon) Then
-			;$id7 = _Timer_SetTimer($Bot,1200,"_fishing")
-			$id7 = _Timer_SetTimer($Bot,2000,"_fishing")
+			$id7 = _Timer_SetTimer($Bot,1200,"_fishing")
 		Else
 			_Timer_KillTimer($Bot,$id7)
 		EndIf
@@ -264,7 +262,7 @@ While 1
 
 	  Case $Afkon
 		 If _IsChecked($Afkon) Then
-			$id9 = _Timer_SetTimer($Bot,60*1000*7,"_afk")
+			$id9 = _Timer_SetTimer($Bot,20,"afk")
 			global $battlevaltemp = $battleval_global[1]
 		 Else
 			_Timer_KillTimer($Bot,$id9)
@@ -272,7 +270,7 @@ While 1
 
 	  Case $Lighton
 		 If _IsChecked($Lighton) Then
-			$id10 = _Timer_SetTimer($Bot,300,"light")
+			$id10 = _Timer_SetTimer($Bot,20,"light")
 		 Else
 			_Timer_KillTimer($Bot,$id10)
 		 EndIf
@@ -457,11 +455,8 @@ func name($1,$2,$3,$4)
    $finalrslot = "0x" & hex($base_adr+$rslot_static)
    global $ringslot_global = _MemoryPointerRead($finalrslot, $memory_g, $rslot_offset)
 
-   $finalADDRbat = "0x" & hex($base_adr+$battle_static)
-   global $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
-
-   $finaladdratk = "0x" & hex($base_adr+$ifattack_static)
-   global $atkval_global = _MemoryPointerRead($finaladdratk, $memory_g, $ifattack_offset)
+	$finalADDRbat = "0x" & hex($base_adr+$battle_static)
+    global $battleval_global = _MemoryPointerRead($finalADDRbat, $memory_g, $battle_offset)
 EndFunc
 
 func nameupdate($1,$2,$3,$4)
@@ -482,13 +477,11 @@ EndFunc
 
 func light($1,$2,$3,$4)
    $finalADDR = "0x" & hex($base_adr+$light_static)
-   _MemoryPointerWrite($finalADDR, $memory_g, $light_offset, 2303)
+   _MemoryPointerWrite($finalADDR, $memory_g, $light_offset, 55060)
 EndFunc
 
-
-
 func change100($1,$2,$3,$4)
-		Local $search = _ImageSearch('Includes\img\102.bmp', 0, $ch100x, $ch100y, 0)
+		Local $search = _ImageSearch('Includes\img\100.bmp', 0, $ch100x, $ch100y, 0)
 		If $search = 1 Then
 			;_MouseClickPlus($hwnd,"right",$ch100x+15,$ch100y+15,1)
 			local $mxy = MouseGetPos()
@@ -503,7 +496,7 @@ func lootgold($1,$2,$3,$4)
 		;_MouseDragPlus($hWnd,"left",$gtlx+5,$gtly+5,$aim4xy[0],$aim4xy[1])
 		;KeySend($hwnd,"RETURN")
 
-		Local $search = _ImageSearchArea('*Trans0xFF00FF'&'Includes\img\1.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 200)
+		Local $search = _ImageSearchArea('Includes\img\1.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 0)
 		If $search = 1 Then
 			MouseMove($gtlx+15, $gtly+15,1)
 			MouseDown("left")
@@ -513,7 +506,7 @@ func lootgold($1,$2,$3,$4)
 			MouseMove($mxy[0],$mxy[1],1)
 		EndIf
 
-		$search = _ImageSearchArea('*Trans0xFF00FF'&'Includes\img\2.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 200)
+		$search = _ImageSearchArea('Includes\img\2.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 0)
 		If $search = 1 Then
 			MouseMove($gtlx+15, $gtly+15,1)
 			MouseDown("left")
@@ -523,7 +516,7 @@ func lootgold($1,$2,$3,$4)
 			MouseMove($mxy[0],$mxy[1],1)
 		EndIf
 
-		$search = _ImageSearchArea('*Trans0xFF00FF'&'Includes\img\3.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 200)
+		$search = _ImageSearchArea('Includes\img\3.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 0)
 		If $search = 1 Then
 			MouseMove($gtlx+15, $gtly+15,1)
 			MouseDown("left")
@@ -533,7 +526,7 @@ func lootgold($1,$2,$3,$4)
 			MouseMove($mxy[0],$mxy[1],1)
 		EndIf
 
-		$search = _ImageSearchArea('*Trans0xFF00FF'&'Includes\img\4.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 200)
+		$search = _ImageSearchArea('Includes\img\4.bmp', 0, $lootxy[0], $lootxy[1], @DesktopWidth, @DesktopHeight, $gtlx, $gtly, 0)
 		If $search = 1 Then
 			MouseMove($gtlx+15, $gtly+15,1)
 			MouseDown("left")
@@ -611,20 +604,12 @@ func _senzu3($1,$2,$3,$4)
 	  EndIf
 EndFunc
 
-func _autoatk($1,$2,$3,$4)
-   Local $val = $atkval_global[1]
-   if $val <> 0 Then
-	   KeySend($hwnd,"F1")
-   EndIf
-EndFunc
-
 func _fishing($1,$2,$3,$4)
 	  $range = 2*50
-	  ;If $cap_global[1] >= guictrlread($FishInput) Then
+	  If $cap_global[1] >= guictrlread($FishInput) Then
 		KeySend($hwnd,guictrlread($ManaHot4))
 		_MouseClickPlusW($hwnd,"left",Round($fishxy[0]+Random($range*-1, $range)),Round($fishxy[1]+Random($range*-1, $range)),1)
-		;_MouseClickPlusW($hwnd,"left",$fishxy[0],$fishxy[1],1)
-	  ;EndIf
+	  EndIf
 EndFunc
 
 func _lifering($1,$2,$3,$4)
@@ -635,27 +620,7 @@ func _lifering($1,$2,$3,$4)
 	EndIf
 EndFunc
 
-func _afk($1,$2,$3,$4)
-   ControlSend($hwnd,"","","{CTRLDOWN}{DOWN}{CTRLUP}")
-   ControlSend($hwnd,"","","{CTRLDOWN}{DOWN}{CTRLUP}")
-   ControlSend($hwnd,"","","{CTRLDOWN}{DOWN}{CTRLUP}")
-   Sleep(500)
-   ControlSend($hwnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
-   ControlSend($hwnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
-   ControlSend($hwnd,"","","{CTRLDOWN}{UP}{CTRLUP}")
-EndFunc
-
-func _afk2($1,$2,$3,$4)
-   WinActivate($hWnd)
-   Sleep(200)
-   Send("^{DOWN}")
-   Sleep(200)
-   Send("^{UP}")
-   Sleep(200)
-   Send("!{TAB}")
-EndFunc
-
-func _autoattack($1,$2,$3,$4)
+func afk($1,$2,$3,$4)
    If $logon == 1 Then
 	  if ($battleval_global[1] <> $battlevaltemp And $islogin_global[1] <> 0) Then
 		WinActivate($hWnd)

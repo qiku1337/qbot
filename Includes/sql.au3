@@ -81,7 +81,7 @@ EndFunc
 
 Func getmotd()
    local $pass = "okiweskj"
-   local $ip = "srv04.mikr.us"
+   local $ip = "srv07.mikr.us"
 
    If Not _EzMySql_Startup() Then
 	   ConsoleWrite("Error Starting MySql" & @CRLF)
@@ -89,7 +89,7 @@ Func getmotd()
 	   Exit
    EndIf
 
-   If Not _EzMySql_Open($ip, "bot", $pass, "", "20561") Then
+   If Not _EzMySql_Open($ip, "bot", $pass, "", "20482") Then
 	   ConsoleWrite("Error opening Database" & @CRLF)
 	   error95()
 	   Exit
